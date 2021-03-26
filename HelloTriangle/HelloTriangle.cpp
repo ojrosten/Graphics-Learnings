@@ -76,9 +76,9 @@ int main()
     texturedCubeShaderProgram.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
     texturedCubeShaderProgram.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
     texturedCubeShaderProgram.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
-    texturedCubeShaderProgram.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
     texturedCubeShaderProgram.setInt("material.diffuse", 0);
-    texturedCubeShaderProgram.setFloat("material.shininess", 32);
+    texturedCubeShaderProgram.setInt("material.specular", 1);
+    texturedCubeShaderProgram.setFloat("material.shininess", 128);
 
     cubeShaderProgram.use();
     cubeShaderProgram.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
@@ -104,7 +104,8 @@ int main()
     std::cout << std::filesystem::current_path() << '\n';
 
     Model ourModel(std::filesystem::current_path().parent_path() / "Images" / "backpack" / "backpack.obj");
-    Examples::Cube texturedCube{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/container.jpg"};
+    Examples::Cube texturedCube{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/container2.png",
+                                "C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/container2_specular.png"};
     Examples::Cube lightSourceCube{""}, cube{""};
 
 
@@ -119,7 +120,7 @@ int main()
 
     // Textured Cube
     glm::mat4 texturedCubeModel = glm::mat4(1.0f);
-    texturedCubeModel = glm::translate(texturedCubeModel, glm::vec3(2.0f, 1.0f, 2.0f));
+    texturedCubeModel = glm::translate(texturedCubeModel, glm::vec3(-2.0f, -1.0f, 0.0f));
     texturedCubeModel = glm::scale(texturedCubeModel, glm::vec3(0.5));
 
     // Cube
@@ -147,14 +148,15 @@ int main()
 
         const auto view = glm::lookAt(c.pos, c.pos + c.front, c.up);
         const auto projection = glm::perspective(glm::radians(mouse.zoom()), 800.0f / 600.0f, 0.1f, 100.0f);
-        model = glm::rotate(model, fmodf(static_cast<float>(glm::radians(10.0f) * deltaTime), static_cast<float>(glm::radians(360.0))), glm::vec3(0.0f, 1.0f, 0.0f));
-
+        
         // Textured Cube
+        texturedCubeModel = glm::rotate(texturedCubeModel, fmodf(static_cast<float>(glm::radians(10.0f) * deltaTime), static_cast<float>(glm::radians(360.0))), glm::vec3(0.0f, 1.0f, 0.0f));
+
         texturedCubeShaderProgram.use();
         texturedCubeShaderProgram.setMatrix4("view", view);
         texturedCubeShaderProgram.setMatrix4("projection", projection);
         texturedCubeShaderProgram.setMatrix4("model", texturedCubeModel);
-        texturedCubeShaderProgram.setVec3("lightPos", lightSourcePos);
+        texturedCubeShaderProgram.setVec3("light.position", lightSourcePos);
         texturedCubeShaderProgram.setVec3("viewPos", c.pos);
 
         texturedCube.Draw(texturedCubeShaderProgram);
@@ -178,6 +180,8 @@ int main()
         lightSourceCube.Draw(lightSourceShaderProgram);
 
         // Backpack
+        model = glm::rotate(model, fmodf(static_cast<float>(glm::radians(10.0f) * deltaTime), static_cast<float>(glm::radians(360.0))), glm::vec3(0.0f, 1.0f, 0.0f));
+
         backpackShaderProgram.use();
         backpackShaderProgram.setMatrix4("view", view);
         backpackShaderProgram.setMatrix4("projection", projection);

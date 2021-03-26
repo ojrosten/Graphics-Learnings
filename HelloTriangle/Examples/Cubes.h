@@ -15,14 +15,14 @@ namespace Graphics::Examples
   class Cube
   {
   public:
-    Cube(const std::filesystem::path& texPath);
+    Cube(const std::filesystem::path& texPath, const std::filesystem::path& specMapPath="");
 
     void Draw(Graphics::ShaderProgram&);
   private:
     VBOBinder vbo{};
     VAOBinder vao{};
     EBOBinder ebo{};
-    TextureBinder texture;
+    TextureBinder texture, specTexture;
 
     constexpr static std::size_t cols{8};
     constexpr static std::size_t rows{36};

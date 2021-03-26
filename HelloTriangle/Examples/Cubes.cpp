@@ -5,8 +5,9 @@
 
 namespace Graphics::Examples
 {
-  Cube::Cube(const std::filesystem::path& texPath)
-    : texture{GL_TEXTURE0, texPath.string().c_str()}
+  Cube::Cube(const std::filesystem::path& texPath, const std::filesystem::path& specMapPath)
+    : texture{GL_TEXTURE0, texPath}
+    , specTexture{GL_TEXTURE1, specMapPath}
   {
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices.data(), GL_STATIC_DRAW); // VBO
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices.data(), GL_STATIC_DRAW);
@@ -27,6 +28,7 @@ namespace Graphics::Examples
     vao.bind();
     ebo.bind();
     texture.bind();
+    specTexture.bind();
 
     glDrawArrays(GL_TRIANGLES, 0, 36);
   }
