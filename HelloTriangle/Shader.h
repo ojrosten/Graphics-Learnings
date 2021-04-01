@@ -154,6 +154,12 @@ namespace Graphics
             glUniform4f(loc, x, y, z, w);
         }
 
+        void setVec4(std::string_view uniform, const glm::vec4& v)
+        {
+            const int loc{glGetUniformLocation(m_ID, uniform.data())};
+            glUniform4f(loc, v.x, v.y, v.z, v.w);
+        }
+
         void setMatrix4(std::string_view uniform, const glm::mat4& mat)
         {
             const int loc{ glGetUniformLocation(m_ID, uniform.data()) };

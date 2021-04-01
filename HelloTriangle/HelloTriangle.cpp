@@ -7,6 +7,7 @@
 #include "Input.h"
 #include "InputProcessing.h"
 #include "Model.h"
+#include "Lighting.h"
 #include "Examples/Cubes.h"
 
 #include "glm/gtc/matrix_transform.hpp"
@@ -129,7 +130,10 @@ int main()
     cubeModel = glm::scale(cubeModel, glm::vec3(0.5));
 
     // Light source
-    const glm::vec3 lightSourcePos{-2.0f, -2.0f, 4.0f};
+    Lighting pointLight{{-2.0f, -2.0f, 4.0f}, point_light};
+    //Lighting pointLight{{2.0f, 2.0f, 4.0f}, directional_light};
+
+    const glm::vec3 lightSourcePos{pointLight.directionality()};
     glm::mat4 lightSourceModel = glm::mat4(1.0f);
     lightSourceModel = glm::translate(lightSourceModel, lightSourcePos); // translate it down so it's at the center of the scene
     lightSourceModel = glm::scale(lightSourceModel, glm::vec3(0.2f));
@@ -156,7 +160,10 @@ int main()
         texturedCubeShaderProgram.setMatrix4("view", view);
         texturedCubeShaderProgram.setMatrix4("projection", projection);
         texturedCubeShaderProgram.setMatrix4("model", texturedCubeModel);
-        texturedCubeShaderProgram.setVec3("light.position", lightSourcePos);
+        texturedCubeShaderProgram.setVec4("light.directionality", pointLight.directionality());
+        texturedCubeShaderProgram.setFloat("light.constant", 1.0f);
+        texturedCubeShaderProgram.setFloat("light.linear", 0.09f);
+        texturedCubeShaderProgram.setFloat("light.quadratic", 0.032f);
         texturedCubeShaderProgram.setVec3("viewPos", c.pos);
 
         texturedCube.Draw(texturedCubeShaderProgram);

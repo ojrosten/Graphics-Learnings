@@ -177,6 +177,7 @@
     <ClInclude Include="Examples\Cubes.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="InputProcessing.h" />
+    <ClInclude Include="Lighting.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Shader.h" />

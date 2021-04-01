@@ -37,6 +37,10 @@ namespace Graphics
             c.pos -= glm::normalize(glm::cross(c.front, c.up)) * c.speed;
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
             c.pos += glm::normalize(glm::cross(c.front, c.up)) * c.speed;
+        if(glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+            c.pos += c.speed * c.up;
+        if(glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+            c.pos -= c.speed * c.up;
 
         /*glm::vec3 direction;
         direction.x = cos(glm::radians(mouse.yaw()) )* cos(glm::radians(mouse.pitch()));

@@ -12,11 +12,15 @@ struct Material {
 };
 
 struct Light {
-    vec3 position;
+    vec4 directionality;
 
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
+
+    float constant;
+    float linear;
+    float quadratic;
 };
 
 
@@ -32,7 +36,9 @@ void main()
 
     // Diffuse
     vec3 norm = normalize(Normal);
-    vec3 lightDir = normalize(light.position - FragPos);
+    float w = light.directionality.w;
+    vec3 rawLightDir = light.directionality.xyz*(2*w-1) - FragPos*w;
+    vec3 lightDir = normalize(rawLightDir);
 
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = diff * vec3(texture(material.diffuse, TexCoords)) * light.diffuse;
@@ -44,5 +50,9 @@ void main()
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     vec3 specular =  spec * vec3(texture(material.specular, TexCoords)) * light.specular;
 
-    FragColor = vec4(ambient + diffuse + specular, 1.0);
+    // Attenuation
+    float distance    = length(rawLightDir);
+    float attenuation = pow(1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance)), w); 
+
+    FragColor = vec4(ambient*attenuation + diffuse*attenuation + specular*attenuation, 1.0);
 }
