@@ -14,6 +14,10 @@ struct Material {
 struct Light {
     vec4 directionality;
 
+    // For spotlights, only
+    float innerCutOff;
+    float outerCutOff;
+
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
@@ -52,7 +56,17 @@ void main()
 
     // Attenuation
     float distance    = length(rawLightDir);
-    float attenuation = pow(1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance)), w); 
+    float attenuation = pow(1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance)), w);
+
+    if(w != 0)
+    {
+      float cosTheta = dot(lightDir, normalize(light.directionality.xyz));
+
+      float epsilon   = light.innerCutOff - light.outerCutOff;
+      float intensity = (epsilon != 0) ? clamp((cosTheta - light.outerCutOff) / epsilon, 0.0, 1.0) : 1.0;
+      diffuse  *= intensity;
+      specular *= intensity;
+    }
 
     FragColor = vec4(ambient*attenuation + diffuse*attenuation + specular*attenuation, 1.0);
 }

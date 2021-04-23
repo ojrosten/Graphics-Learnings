@@ -76,6 +76,8 @@ int main()
     texturedCubeShaderProgram.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
     texturedCubeShaderProgram.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
     texturedCubeShaderProgram.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+    texturedCubeShaderProgram.setFloat("light.outerCutOff", glm::cos(glm::radians(17.5f)));
+    texturedCubeShaderProgram.setFloat("light.innerCutOff", glm::cos(glm::radians(12.5f)));
     texturedCubeShaderProgram.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
     texturedCubeShaderProgram.setInt("material.diffuse", 0);
     texturedCubeShaderProgram.setInt("material.specular", 1);
@@ -164,6 +166,11 @@ int main()
         texturedCubeShaderProgram.setFloat("light.constant", 1.0f);
         texturedCubeShaderProgram.setFloat("light.linear", 0.09f);
         texturedCubeShaderProgram.setFloat("light.quadratic", 0.032f);
+        texturedCubeShaderProgram.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+        texturedCubeShaderProgram.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+        texturedCubeShaderProgram.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+        texturedCubeShaderProgram.setFloat("light.outerCutOff", glm::cos(glm::radians(45.0f)));
+        texturedCubeShaderProgram.setFloat("light.innerCutOff", glm::cos(glm::radians(35.0f)));
         texturedCubeShaderProgram.setVec3("viewPos", c.pos);
 
         texturedCube.Draw(texturedCubeShaderProgram);
