@@ -68,7 +68,8 @@ void main()
           float cosTheta = dot(lightDir, normalize(light[i].directionality.xyz));
 
           float epsilon   = light[i].innerCutOff - light[i].outerCutOff;
-          float intensity = (epsilon != 0) ? clamp((cosTheta - light[i].outerCutOff) / epsilon, 0.0, 1.0) : 1.0;
+          float intensity = (epsilon != 0) ? clamp((cosTheta - light[i].outerCutOff) / epsilon, 0.0, 1.0) : 
+                            (cosTheta > light[i].outerCutOff) ? 1.0 : 0.0;
           localDiffuse  *= intensity;
           localSpecular *= intensity;
         }
