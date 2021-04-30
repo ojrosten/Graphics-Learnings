@@ -73,11 +73,11 @@ int main()
     backpackShaderProgram.setFloat("shininess", 32);
 
     texturedCubeShaderProgram.use();
-    texturedCubeShaderProgram.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-    texturedCubeShaderProgram.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
-    texturedCubeShaderProgram.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-    texturedCubeShaderProgram.setFloat("light.outerCutOff", glm::cos(glm::radians(17.5f)));
-    texturedCubeShaderProgram.setFloat("light.innerCutOff", glm::cos(glm::radians(12.5f)));
+    texturedCubeShaderProgram.setVec3("light[0].ambient", 0.2f, 0.2f, 0.2f);
+    texturedCubeShaderProgram.setVec3("light[0].diffuse", 0.5f, 0.5f, 0.5f);
+    texturedCubeShaderProgram.setVec3("light[0].specular", 1.0f, 1.0f, 1.0f);
+    texturedCubeShaderProgram.setFloat("light[0].outerCutOff", glm::cos(glm::radians(17.0f)));
+    texturedCubeShaderProgram.setFloat("light[0].innerCutOff", glm::cos(glm::radians(12.0f)));
     texturedCubeShaderProgram.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
     texturedCubeShaderProgram.setInt("material.diffuse", 0);
     texturedCubeShaderProgram.setInt("material.specular", 1);
@@ -123,7 +123,7 @@ int main()
 
     // Textured Cube
     glm::mat4 texturedCubeModel = glm::mat4(1.0f);
-    texturedCubeModel = glm::translate(texturedCubeModel, glm::vec3(-2.0f, -1.0f, 0.0f));
+    texturedCubeModel = glm::translate(texturedCubeModel, glm::vec3(-1.8f, -1.8f, 3.0f));
     texturedCubeModel = glm::scale(texturedCubeModel, glm::vec3(0.5));
 
     // Cube
@@ -162,15 +162,15 @@ int main()
         texturedCubeShaderProgram.setMatrix4("view", view);
         texturedCubeShaderProgram.setMatrix4("projection", projection);
         texturedCubeShaderProgram.setMatrix4("model", texturedCubeModel);
-        texturedCubeShaderProgram.setVec4("light.directionality", pointLight.directionality());
-        texturedCubeShaderProgram.setFloat("light.constant", 1.0f);
-        texturedCubeShaderProgram.setFloat("light.linear", 0.09f);
-        texturedCubeShaderProgram.setFloat("light.quadratic", 0.032f);
-        texturedCubeShaderProgram.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-        texturedCubeShaderProgram.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
-        texturedCubeShaderProgram.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-        texturedCubeShaderProgram.setFloat("light.outerCutOff", glm::cos(glm::radians(45.0f)));
-        texturedCubeShaderProgram.setFloat("light.innerCutOff", glm::cos(glm::radians(35.0f)));
+        texturedCubeShaderProgram.setVec4("light[0].directionality", pointLight.directionality());
+        texturedCubeShaderProgram.setFloat("light[0].constant", 1.0f);
+        texturedCubeShaderProgram.setFloat("light[0].linear", 0.09f);
+        texturedCubeShaderProgram.setFloat("light[0].quadratic", 0.032f);
+        texturedCubeShaderProgram.setVec3("light[0].ambient", 0.2f, 0.2f, 0.2f);
+        texturedCubeShaderProgram.setVec3("light[0].diffuse", 0.5f, 0.5f, 0.5f);
+        texturedCubeShaderProgram.setVec3("light[0].specular", 1.0f, 1.0f, 1.0f);
+        texturedCubeShaderProgram.setFloat("light[0].outerCutOff", glm::cos(glm::radians(15.0f)));
+        texturedCubeShaderProgram.setFloat("light[0].innerCutOff", glm::cos(glm::radians(12.0f)));
         texturedCubeShaderProgram.setVec3("viewPos", c.pos);
 
         texturedCube.Draw(texturedCubeShaderProgram);
