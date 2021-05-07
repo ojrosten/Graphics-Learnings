@@ -82,14 +82,22 @@ namespace Graphics
         m_ID = linkProgram(vertex.get(), fragment.get());
     }
 
-    void setUpUberPhong(ShaderProgram& program)
+    void setUpUberPhong(ShaderProgram& program, const std::vector<Lighting>& lights)
     {
         program.use();
-        program.setVec3("light[0].ambient", 0.2f, 0.2f, 0.2f);
-        program.setVec3("light[0].diffuse", 0.5f, 0.5f, 0.5f);
-        program.setVec3("light[0].specular", 1.0f, 1.0f, 1.0f);
-        program.setFloat("light[0].outerCutOff", glm::cos(glm::radians(17.0f)));
-        program.setFloat("light[0].innerCutOff", glm::cos(glm::radians(12.0f)));
+
+        for(int i{}; i<lights.size(); ++i)
+        {
+            const auto& light{lights[i]};
+            auto preamble{std::string{"light["}.append(std::to_string(i)).append("].")};
+            program.setVec4(preamble + "directionality", light.directionality());
+            program.setVec3(preamble + "ambient", light.ambient());
+            program.setVec3(preamble + "diffuse", light.diffuse());
+            program.setVec3(preamble + "specular", light.specular());
+            program.setFloat(preamble + "innerCutOff", light.cos_inner_cutoff());
+            program.setFloat(preamble + "outerCutOff", light.cos_outer_cutoff());
+        }
+
         program.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
         program.setInt("material.diffuse", 0);
         program.setInt("material.specular", 1);
@@ -100,22 +108,30 @@ namespace Graphics
         const glm::highp_mat4& view,
         const glm::highp_mat4& projection,
         const glm::mat4& model,
-        const Lighting& light,
+        const std::vector<Lighting>& lights,
         const camera& c)
     {
         program.use();
         program.setMatrix4("view", view);
         program.setMatrix4("projection", projection);
         program.setMatrix4("model", model);
-        program.setVec4("light[0].directionality", light.directionality());
+
+        for(int i{}; i < lights.size(); ++i)
+        {
+            const auto& light{lights[i]};
+            auto preamble{std::string{"light["}.append(std::to_string(i)).append("].")};
+
+            program.setVec4(preamble + "directionality", light.directionality());
+            program.setVec3(preamble + "ambient", light.ambient());
+            program.setVec3(preamble + "diffuse", light.diffuse());
+            program.setVec3(preamble + "specular", light.specular());
+            program.setFloat(preamble + "innerCutOff", light.cos_inner_cutoff());
+            program.setFloat(preamble + "outerCutOff", light.cos_outer_cutoff());
+        }
+
         program.setFloat("light[0].constant", 1.0f);
         program.setFloat("light[0].linear", 0.09f);
         program.setFloat("light[0].quadratic", 0.032f);
-        program.setVec3("light[0].ambient", 0.2f, 0.2f, 0.2f);
-        program.setVec3("light[0].diffuse", 0.5f, 0.5f, 0.5f);
-        program.setVec3("light[0].specular", 1.0f, 1.0f, 1.0f);
-        program.setFloat("light[0].outerCutOff", glm::cos(glm::radians(15.0f)));
-        program.setFloat("light[0].innerCutOff", glm::cos(glm::radians(12.0f)));
         program.setVec3("viewPos", c.pos);
     }
 }

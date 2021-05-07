@@ -109,12 +109,12 @@ namespace Graphics
         int  m_ID{};
     };
 
-    void setUpUberPhong(ShaderProgram& program);
+    void setUpUberPhong(ShaderProgram& program, const std::vector<Lighting>& lights);
 
     void updateUberPhong(ShaderProgram& program,
                          const glm::highp_mat4& view,
                          const glm::highp_mat4& projection,
                          const glm::mat4& model,
-                         const Lighting& light,
+                         const std::vector<Lighting>& lights,
                          const camera& c);
 }

@@ -65,9 +65,13 @@ int main()
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    setUpUberPhong(backpackShaderProgram);
-    setUpUberPhong(texturedCubeShaderProgram);
-    setUpUberPhong(cubeShaderProgram);
+    // Light source
+    Lighting pointLight{{-2.0f, -2.0f, 4.0f}, point_light};
+    //Lighting pointLight{{2.0f, 2.0f, 4.0f}, directional_light};
+
+    setUpUberPhong(backpackShaderProgram,     {pointLight});
+    setUpUberPhong(texturedCubeShaderProgram, {pointLight});
+    setUpUberPhong(cubeShaderProgram,         {pointLight});
 
     lightSourceShaderProgram.use();
     lightSourceShaderProgram.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
@@ -108,10 +112,6 @@ int main()
     cubeModel = glm::translate(cubeModel, glm::vec3(-2.0f, 1.0f, 2.0f));
     cubeModel = glm::scale(cubeModel, glm::vec3(0.5));
 
-    // Light source
-    Lighting pointLight{{-2.0f, -2.0f, 4.0f}, point_light};
-    //Lighting pointLight{{2.0f, 2.0f, 4.0f}, directional_light};
-
     const glm::vec3 lightSourcePos{pointLight.directionality()};
     glm::mat4 lightSourceModel = glm::mat4(1.0f);
     lightSourceModel = glm::translate(lightSourceModel, lightSourcePos); // translate it down so it's at the center of the scene
@@ -142,16 +142,16 @@ int main()
 
         // Textured Cube
         texturedCubeModel = glm::rotate(texturedCubeModel, fmodf(static_cast<float>(glm::radians(10.0f) * deltaTime), static_cast<float>(glm::radians(360.0))), glm::vec3(0.0f, 1.0f, 0.0f));
-        updateUberPhong(texturedCubeShaderProgram, view, projection, texturedCubeModel, pointLight, c);
+        updateUberPhong(texturedCubeShaderProgram, view, projection, texturedCubeModel, {pointLight}, c);
         texturedCube.Draw(texturedCubeShaderProgram);
 
         // Cube
-        updateUberPhong(cubeShaderProgram, view, projection, cubeModel, pointLight, c);
+        updateUberPhong(cubeShaderProgram, view, projection, cubeModel, {pointLight}, c);
         cube.Draw(cubeShaderProgram);
 
         // Backpack
         model = glm::rotate(model, fmodf(static_cast<float>(glm::radians(10.0f) * deltaTime), static_cast<float>(glm::radians(360.0))), glm::vec3(0.0f, 1.0f, 0.0f));
-        updateUberPhong(backpackShaderProgram, view, projection, model, pointLight, c);
+        updateUberPhong(backpackShaderProgram, view, projection, model, {pointLight}, c);
         ourModel.Draw(backpackShaderProgram);
 
         glfwSwapBuffers(window);

@@ -27,8 +27,44 @@ namespace Graphics
         {
             return m_Directionality;
         }
+
+        [[nodiscard]]
+        const glm::vec3& ambient() const noexcept
+        {
+            return m_Ambient;
+        }
+
+        [[nodiscard]]
+        const glm::vec3& diffuse() const noexcept
+        {
+            return m_Diffuse;
+        }
+
+        [[nodiscard]]
+        const glm::vec3& specular() const noexcept
+        {
+            return m_Specular;
+        }
+
+        [[nodiscard]]
+        float cos_inner_cutoff() const noexcept
+        {
+            return m_InnerCutoff;
+        }
+   
+        [[nodiscard]]
+        float cos_outer_cutoff() const noexcept
+        {
+            return m_OuterCutoff;
+        }
     private:
         glm::vec4 m_Directionality;
+
+        glm::vec3 m_Ambient{0.2f, 0.2f, 0.2f},
+                  m_Diffuse{0.5f, 0.5f, 0.5f},
+                  m_Specular{1.0f, 1.0f, 1.0f};
+
+        float m_InnerCutoff{glm::cos(glm::radians(12.0f))}, m_OuterCutoff{glm::cos(glm::radians(17.0f))};
     };
 
     inline constexpr Lighting::point_t point_light{};
