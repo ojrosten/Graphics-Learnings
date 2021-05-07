@@ -58,20 +58,16 @@ int main()
 
     using namespace Graphics;
 
-    ShaderProgram backpackShaderProgram{"../Shaders/model_loading.vs", "../Shaders/phong_with_texture.fs" };
+    ShaderProgram backpackShaderProgram{"../Shaders/model_loading.vs", "../Shaders/phong_with_maps.fs" };
     ShaderProgram texturedCubeShaderProgram{"../Shaders/textured_cube.vs", "../Shaders/phong_with_maps.fs"};
     ShaderProgram lightSourceShaderProgram{"../Shaders/cube.vs", "../Shaders/phong.fs"};
-    ShaderProgram cubeShaderProgram{"../Shaders/cube.vs", "../Shaders/phong.fs"};
+    ShaderProgram cubeShaderProgram{"../Shaders/cube.vs", "../Shaders/phong_with_maps.fs"};
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    backpackShaderProgram.use();
-    backpackShaderProgram.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-    backpackShaderProgram.setFloat("ambientStrength", 0.0f);
-    backpackShaderProgram.setFloat("specularStrength", 0.5f);
-    backpackShaderProgram.setFloat("shininess", 32);
-
+    setUpUberPhong(backpackShaderProgram);
     setUpUberPhong(texturedCubeShaderProgram);
+    setUpUberPhong(cubeShaderProgram);
 
     lightSourceShaderProgram.use();
     lightSourceShaderProgram.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
@@ -135,22 +131,6 @@ int main()
 
         const auto view = glm::lookAt(c.pos, c.pos + c.front, c.up);
         const auto projection = glm::perspective(glm::radians(mouse.zoom()), 800.0f / 600.0f, 0.1f, 100.0f);
-        
-        // Textured Cube
-        texturedCubeModel = glm::rotate(texturedCubeModel, fmodf(static_cast<float>(glm::radians(10.0f) * deltaTime), static_cast<float>(glm::radians(360.0))), glm::vec3(0.0f, 1.0f, 0.0f));
-
-        updateUberPhong(texturedCubeShaderProgram, view, projection, texturedCubeModel, pointLight, c);
-        texturedCube.Draw(texturedCubeShaderProgram);
-
-        // Cube
-        cubeShaderProgram.use();
-        cubeShaderProgram.setMatrix4("view", view);
-        cubeShaderProgram.setMatrix4("projection", projection);
-        cubeShaderProgram.setMatrix4("model", cubeModel);
-        cubeShaderProgram.setVec3("light.position", lightSourcePos);
-        cubeShaderProgram.setVec3("viewPos", c.pos);
-
-        cube.Draw(cubeShaderProgram);
 
         // Light source
         lightSourceShaderProgram.use();
@@ -160,16 +140,18 @@ int main()
 
         lightSourceCube.Draw(lightSourceShaderProgram);
 
+        // Textured Cube
+        texturedCubeModel = glm::rotate(texturedCubeModel, fmodf(static_cast<float>(glm::radians(10.0f) * deltaTime), static_cast<float>(glm::radians(360.0))), glm::vec3(0.0f, 1.0f, 0.0f));
+        updateUberPhong(texturedCubeShaderProgram, view, projection, texturedCubeModel, pointLight, c);
+        texturedCube.Draw(texturedCubeShaderProgram);
+
+        // Cube
+        updateUberPhong(cubeShaderProgram, view, projection, cubeModel, pointLight, c);
+        cube.Draw(cubeShaderProgram);
+
         // Backpack
         model = glm::rotate(model, fmodf(static_cast<float>(glm::radians(10.0f) * deltaTime), static_cast<float>(glm::radians(360.0))), glm::vec3(0.0f, 1.0f, 0.0f));
-
-        backpackShaderProgram.use();
-        backpackShaderProgram.setMatrix4("view", view);
-        backpackShaderProgram.setMatrix4("projection", projection);
-        backpackShaderProgram.setMatrix4("model", model);
-        backpackShaderProgram.setVec3("lightPos", lightSourcePos);
-        backpackShaderProgram.setVec3("viewPos", c.pos);
-
+        updateUberPhong(backpackShaderProgram, view, projection, model, pointLight, c);
         ourModel.Draw(backpackShaderProgram);
 
         glfwSwapBuffers(window);
