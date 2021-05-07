@@ -17,22 +17,14 @@
 
 namespace Graphics
 {
+    void report(GLuint shader, std::string_view shaderName, bool success);
+
     template<class Fn>
     void check(GLuint shader, std::string_view shaderName, Fn fn)
     {
         int success;
         fn(&success);
-
-        if (!success)
-        {
-            char infoLog[512];
-            glGetShaderInfoLog(shader, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::" << shaderName << "::COMPILATION_FAILED\n" << infoLog << std::endl;
-        }
-        else
-        {
-            std::cout << "Compiled " << shaderName << " successfully!\n";
-        }
+        report(shader, shaderName, success);
     }
 
     class ShaderCompiler
@@ -115,11 +107,6 @@ namespace Graphics
         }
     private:
         int  m_ID{};
-
-        std::string readCode()
-        {
-
-        }
     };
 
     void setUpUberPhong(ShaderProgram& program);

@@ -2,6 +2,20 @@
 
 namespace Graphics
 {
+    void report(GLuint shader, std::string_view shaderName, bool success)
+    {
+        if(!success)
+        {
+            char infoLog[512];
+            glGetShaderInfoLog(shader, 512, NULL, infoLog);
+            std::cout << "ERROR::SHADER::" << shaderName << "::COMPILATION_FAILED\n" << infoLog << std::endl;
+        }
+        else
+        {
+            std::cout << "Compiled " << shaderName << " successfully!\n";
+        }
+    }
+
     int linkProgram(GLuint vertexShader, GLuint fragmentShader)
     {
         unsigned int shaderProgram;
