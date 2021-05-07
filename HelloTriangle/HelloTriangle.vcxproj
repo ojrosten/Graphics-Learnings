@@ -170,10 +170,12 @@
     <ClCompile Include="ImageUploader.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\ImageUpload\stb_image.h" />
     <ClInclude Include="Binder.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Examples\Cubes.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="InputProcessing.h" />

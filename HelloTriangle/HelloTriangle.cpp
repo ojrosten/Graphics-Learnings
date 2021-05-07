@@ -26,7 +26,6 @@ constexpr std::string_view fragmentShaderLightSource{ "#version 330 core\n"
 "    FragColor = vec4(1);\n"
 "}" };
 
-
 int main()
 {
     glfwInit();
@@ -72,25 +71,7 @@ int main()
     backpackShaderProgram.setFloat("specularStrength", 0.5f);
     backpackShaderProgram.setFloat("shininess", 32);
 
-    texturedCubeShaderProgram.use();
-    texturedCubeShaderProgram.setVec3("light[0].ambient", 0.2f, 0.2f, 0.2f);
-    texturedCubeShaderProgram.setVec3("light[0].diffuse", 0.5f, 0.5f, 0.5f);
-    texturedCubeShaderProgram.setVec3("light[0].specular", 1.0f, 1.0f, 1.0f);
-    texturedCubeShaderProgram.setFloat("light[0].outerCutOff", glm::cos(glm::radians(17.0f)));
-    texturedCubeShaderProgram.setFloat("light[0].innerCutOff", glm::cos(glm::radians(12.0f)));
-    texturedCubeShaderProgram.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
-    texturedCubeShaderProgram.setInt("material.diffuse", 0);
-    texturedCubeShaderProgram.setInt("material.specular", 1);
-    texturedCubeShaderProgram.setFloat("material.shininess", 128);
-
-    cubeShaderProgram.use();
-    cubeShaderProgram.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-    cubeShaderProgram.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
-    cubeShaderProgram.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-    cubeShaderProgram.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
-    cubeShaderProgram.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
-    cubeShaderProgram.setVec3("material.diffuse", 0.3f, 0.15f, 0.2f);
-    cubeShaderProgram.setFloat("material.shininess", 32);
+    setUpUberPhong(texturedCubeShaderProgram);
 
     lightSourceShaderProgram.use();
     lightSourceShaderProgram.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
@@ -158,21 +139,7 @@ int main()
         // Textured Cube
         texturedCubeModel = glm::rotate(texturedCubeModel, fmodf(static_cast<float>(glm::radians(10.0f) * deltaTime), static_cast<float>(glm::radians(360.0))), glm::vec3(0.0f, 1.0f, 0.0f));
 
-        texturedCubeShaderProgram.use();
-        texturedCubeShaderProgram.setMatrix4("view", view);
-        texturedCubeShaderProgram.setMatrix4("projection", projection);
-        texturedCubeShaderProgram.setMatrix4("model", texturedCubeModel);
-        texturedCubeShaderProgram.setVec4("light[0].directionality", pointLight.directionality());
-        texturedCubeShaderProgram.setFloat("light[0].constant", 1.0f);
-        texturedCubeShaderProgram.setFloat("light[0].linear", 0.09f);
-        texturedCubeShaderProgram.setFloat("light[0].quadratic", 0.032f);
-        texturedCubeShaderProgram.setVec3("light[0].ambient", 0.2f, 0.2f, 0.2f);
-        texturedCubeShaderProgram.setVec3("light[0].diffuse", 0.5f, 0.5f, 0.5f);
-        texturedCubeShaderProgram.setVec3("light[0].specular", 1.0f, 1.0f, 1.0f);
-        texturedCubeShaderProgram.setFloat("light[0].outerCutOff", glm::cos(glm::radians(15.0f)));
-        texturedCubeShaderProgram.setFloat("light[0].innerCutOff", glm::cos(glm::radians(12.0f)));
-        texturedCubeShaderProgram.setVec3("viewPos", c.pos);
-
+        updateUberPhong(texturedCubeShaderProgram, view, projection, texturedCubeModel, pointLight, c);
         texturedCube.Draw(texturedCubeShaderProgram);
 
         // Cube
