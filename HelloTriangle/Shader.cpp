@@ -82,28 +82,6 @@ namespace Graphics
         m_ID = linkProgram(vertex.get(), fragment.get());
     }
 
-    void setUpUberPhong(ShaderProgram& program, const std::vector<Lighting>& lights)
-    {
-        program.use();
-
-        for(int i{}; i<lights.size(); ++i)
-        {
-            const auto& light{lights[i]};
-            auto preamble{std::string{"light["}.append(std::to_string(i)).append("].")};
-            program.setVec4(preamble + "directionality", light.directionality());
-            program.setVec3(preamble + "ambient", light.ambient());
-            program.setVec3(preamble + "diffuse", light.diffuse());
-            program.setVec3(preamble + "specular", light.specular());
-            program.setFloat(preamble + "innerCutOff", light.cos_inner_cutoff());
-            program.setFloat(preamble + "outerCutOff", light.cos_outer_cutoff());
-        }
-
-        program.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
-        program.setInt("material.diffuse", 0);
-        program.setInt("material.specular", 1);
-        program.setFloat("material.shininess", 128);
-    }
-
     void updateUberPhong(ShaderProgram& program,
         const glm::highp_mat4& view,
         const glm::highp_mat4& projection,
@@ -115,6 +93,7 @@ namespace Graphics
         program.setMatrix4("view", view);
         program.setMatrix4("projection", projection);
         program.setMatrix4("model", model);
+        program.setVec3("viewPos", c.pos);
 
         for(int i{}; i < lights.size(); ++i)
         {
@@ -122,16 +101,19 @@ namespace Graphics
             auto preamble{std::string{"light["}.append(std::to_string(i)).append("].")};
 
             program.setVec4(preamble + "directionality", light.directionality());
-            program.setVec3(preamble + "ambient", light.ambient());
-            program.setVec3(preamble + "diffuse", light.diffuse());
-            program.setVec3(preamble + "specular", light.specular());
-            program.setFloat(preamble + "innerCutOff", light.cos_inner_cutoff());
-            program.setFloat(preamble + "outerCutOff", light.cos_outer_cutoff());
+            program.setVec3(preamble + "ambient",  light.components().ambient);
+            program.setVec3(preamble + "diffuse",  light.components().diffuse);
+            program.setVec3(preamble + "specular", light.components().specular);
+            program.setFloat(preamble + "innerCutOff", light.shape().cosInnerCutoff);
+            program.setFloat(preamble + "outerCutOff", light.shape().cosOuterCutoff);
+            program.setFloat(preamble + "constant", light.attenuation().constant);
+            program.setFloat(preamble + "linear", light.attenuation().linear);
+            program.setFloat(preamble + "quadratic", light.attenuation().quadratic);
         }
 
-        program.setFloat("light[0].constant", 1.0f);
-        program.setFloat("light[0].linear", 0.09f);
-        program.setFloat("light[0].quadratic", 0.032f);
-        program.setVec3("viewPos", c.pos);
+        program.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
+        program.setInt("material.diffuse", 0);
+        program.setInt("material.specular", 1);
+        program.setFloat("material.shininess", 128);
     }
 }

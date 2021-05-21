@@ -66,12 +66,8 @@ int main()
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // Light source
-    Lighting pointLight{{-2.0f, -2.0f, 4.0f}, point_light};
+    Lighting pointLight{{-2.0f, -2.0f, 4.0f}, {{0.2f, 0.2f, 0.2f}, {0.5f, 0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}};
     //Lighting pointLight{{2.0f, 2.0f, 4.0f}, directional_light};
-
-    setUpUberPhong(backpackShaderProgram,     {pointLight});
-    setUpUberPhong(texturedCubeShaderProgram, {pointLight});
-    setUpUberPhong(cubeShaderProgram,         {pointLight});
 
     lightSourceShaderProgram.use();
     lightSourceShaderProgram.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
