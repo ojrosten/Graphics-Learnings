@@ -40,7 +40,7 @@ void main()
 
     for(int i=0; i<NUM_LIGHTS; ++i)
     {
-    // Ambient
+        // Ambient
         vec3 localAmbient = vec3(texture(material.diffuse, TexCoords)) * light[i].ambient;
 
         // Diffuse

@@ -115,6 +115,9 @@ int main()
 
     backpackShaderProgram.setVec3("lightPos", lightSourcePos);
 
+    MappedMaterial backpackMaterial{}, texturedCubeMaterial{};
+    Material cubeMaterial{{}, {0.7f, 0.3f, 0.1f}, {0.2f, 0.1f, 0.1f}};
+
     while (!glfwWindowShouldClose(window))
     {
         const double currentFrame{ glfwGetTime() };
@@ -138,16 +141,16 @@ int main()
 
         // Textured Cube
         texturedCubeModel = glm::rotate(texturedCubeModel, fmodf(static_cast<float>(glm::radians(10.0f) * deltaTime), static_cast<float>(glm::radians(360.0))), glm::vec3(0.0f, 1.0f, 0.0f));
-        updateUberPhong(texturedCubeShaderProgram, view, projection, texturedCubeModel, {pointLight}, c);
+        updateUberPhong(texturedCubeShaderProgram, view, projection, texturedCubeModel, {pointLight}, texturedCubeMaterial, c);
         texturedCube.Draw(texturedCubeShaderProgram);
 
         // Cube
-        updateUberPhong(cubeShaderProgram, view, projection, cubeModel, {pointLight}, c);
+        updateUberPhong(cubeShaderProgram, view, projection, cubeModel, {pointLight}, cubeMaterial, c);
         cube.Draw(cubeShaderProgram);
 
         // Backpack
         model = glm::rotate(model, fmodf(static_cast<float>(glm::radians(10.0f) * deltaTime), static_cast<float>(glm::radians(360.0))), glm::vec3(0.0f, 1.0f, 0.0f));
-        updateUberPhong(backpackShaderProgram, view, projection, model, {pointLight}, c);
+        updateUberPhong(backpackShaderProgram, view, projection, model, {pointLight}, {backpackMaterial}, c);
         ourModel.Draw(backpackShaderProgram);
 
         glfwSwapBuffers(window);

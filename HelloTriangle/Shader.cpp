@@ -1,4 +1,5 @@
 #include "Shader.h"
+#include "Utilities.h"
 
 namespace Graphics
 {
@@ -87,6 +88,7 @@ namespace Graphics
         const glm::highp_mat4& projection,
         const glm::mat4& model,
         const std::vector<Lighting>& lights,
+        const MaterialVariant& material,
         const camera& c)
     {
         program.use();
@@ -111,9 +113,19 @@ namespace Graphics
             program.setFloat(preamble + "quadratic", light.attenuation().quadratic);
         }
 
-        program.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
-        program.setInt("material.diffuse", 0);
-        program.setInt("material.specular", 1);
-        program.setFloat("material.shininess", 128);
+        auto visitor{
+            Utilities::overloaded{
+                [](const Material& m) {
+        
+                },
+                [&program](const MappedMaterial& m) {
+                    program.setInt("material.diffuse", m.diffuseIndex);
+                    program.setInt("material.specular", m.specularIndex);
+                    program.setFloat("material.shininess", m.shininess);
+                }
+            }
+        };
+
+        std::visit(visitor, material);
     }
 }

@@ -180,9 +180,11 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="InputProcessing.h" />
     <ClInclude Include="Lighting.h" />
+    <ClInclude Include="Materials.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shaders\phong.fs" />

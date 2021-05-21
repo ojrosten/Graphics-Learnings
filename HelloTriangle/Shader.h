@@ -8,6 +8,7 @@
 
 #include "Camera.h"
 #include "Lighting.h"
+#include "Materials.h"
 
 #include <iostream>
 #include <fstream>
@@ -114,5 +115,6 @@ namespace Graphics
                          const glm::highp_mat4& projection,
                          const glm::mat4& model,
                          const std::vector<Lighting>& lights,
+                         const MaterialVariant& material,
                          const camera& c);
 }

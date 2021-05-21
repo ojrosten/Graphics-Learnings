@@ -1,7 +1,6 @@
 #pragma once
 
 #include "glm/glm.hpp"
-#include <type_traits>
 
 namespace Graphics
 {
