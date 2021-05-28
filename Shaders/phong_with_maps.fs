@@ -62,10 +62,11 @@ void main()
         vec3 viewDir = normalize(viewPos - FragPos);
         vec3 reflectDir = reflect(-lightDir, norm);
 
-        float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+        float dotProd = dot(viewDir, reflectDir);
+        float spec = dotProd >  0 ? pow(max(dotProd, 0.0), material.shininess) : 1.0;
         vec3 matSpecular = material.textured ? vec3(texture(material.specularSampler, TexCoords)) : material.specular;
-        vec3 localSpecular =  spec * matSpecular * light[i].specular;
-/*
+        vec3 localSpecular = spec * matSpecular * light[i].specular;
+
         // Attenuation
         float distance    = length(rawLightDir);
         float attenuation = pow(1.0 / (light[i].constant + light[i].linear * distance + light[i].quadratic * (distance * distance)), w);
@@ -80,11 +81,10 @@ void main()
           localDiffuse  *= intensity;
           localSpecular *= intensity;
         }
-        */
 
-        //localAmbient*=attenuation;
-        //localDiffuse*=attenuation;
-        //localSpecular*=attenuation;
+        localAmbient*=attenuation;
+        localDiffuse*=attenuation;
+        localSpecular*=attenuation;
 
         ambient += localAmbient;
         diffuse += localDiffuse;
