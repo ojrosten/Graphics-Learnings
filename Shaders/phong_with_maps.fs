@@ -6,8 +6,12 @@ in vec3 FragPos;
 in vec3 Normal;
 
 struct Material {
-    sampler2D diffuse;
-    sampler2D specular;
+    bool textured;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    sampler2D diffuseSampler;
+    sampler2D specularSampler;
     float shininess;
 };
 
@@ -41,7 +45,8 @@ void main()
     for(int i=0; i<NUM_LIGHTS; ++i)
     {
         // Ambient
-        vec3 localAmbient = vec3(texture(material.diffuse, TexCoords)) * light[i].ambient;
+        vec3 matAmbient= material.textured ? vec3(texture(material.diffuseSampler, TexCoords)) : material.ambient;
+        vec3 localAmbient = matAmbient * light[i].ambient;
 
         // Diffuse
         vec3 norm = normalize(Normal);
@@ -50,15 +55,17 @@ void main()
         vec3 lightDir = normalize(rawLightDir);
 
         float diff = max(dot(norm, lightDir), 0.0);
-        vec3 localDiffuse = diff * vec3(texture(material.diffuse, TexCoords)) * light[i].diffuse;
+        vec3 mattDiffuse = material.textured ? vec3(texture(material.diffuseSampler, TexCoords)) : material.diffuse;
+        vec3 localDiffuse = diff * mattDiffuse * light[i].diffuse;
 
         // Specular
         vec3 viewDir = normalize(viewPos - FragPos);
         vec3 reflectDir = reflect(-lightDir, norm);
 
         float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-        vec3 localSpecular =  spec * vec3(texture(material.specular, TexCoords)) * light[i].specular;
-
+        vec3 matSpecular = material.textured ? vec3(texture(material.specularSampler, TexCoords)) : material.specular;
+        vec3 localSpecular =  spec * matSpecular * light[i].specular;
+/*
         // Attenuation
         float distance    = length(rawLightDir);
         float attenuation = pow(1.0 / (light[i].constant + light[i].linear * distance + light[i].quadratic * (distance * distance)), w);
@@ -73,10 +80,11 @@ void main()
           localDiffuse  *= intensity;
           localSpecular *= intensity;
         }
+        */
 
-        localAmbient*=attenuation;
-        localDiffuse*=attenuation;
-        localSpecular*=attenuation;
+        //localAmbient*=attenuation;
+        //localDiffuse*=attenuation;
+        //localSpecular*=attenuation;
 
         ambient += localAmbient;
         diffuse += localDiffuse;

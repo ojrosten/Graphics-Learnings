@@ -115,12 +115,16 @@ namespace Graphics
 
         auto visitor{
             Utilities::overloaded{
-                [](const Material& m) {
-        
+                [&program](const Material& m) {
+                    program.setBool("material.textured", false);
+                    program.setVec3("material.ambient", m.ambient);
+                    program.setVec3("material.diffuse", m.diffuse);
+                    program.setVec3("material.specular", m.specular);
                 },
                 [&program](const MappedMaterial& m) {
-                    program.setInt("material.diffuse", m.diffuseIndex);
-                    program.setInt("material.specular", m.specularIndex);
+                    program.setBool("material.textured", true);
+                    program.setInt("material.diffuseSampler", m.diffuseIndex);
+                    program.setInt("material.specularSampler", m.specularIndex);
                     program.setFloat("material.shininess", m.shininess);
                 }
             }

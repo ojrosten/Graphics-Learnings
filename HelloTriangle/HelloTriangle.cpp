@@ -60,23 +60,15 @@ int main()
 
     ShaderProgram backpackShaderProgram{"../Shaders/model_loading.vs", "../Shaders/phong_with_maps.fs" };
     ShaderProgram texturedCubeShaderProgram{"../Shaders/textured_cube.vs", "../Shaders/phong_with_maps.fs"};
-    ShaderProgram lightSourceShaderProgram{"../Shaders/cube.vs", "../Shaders/phong.fs"};
+    ShaderProgram lightSourceShaderProgram{"../Shaders/cube.vs", "../Shaders/phong_with_maps.fs"};
     ShaderProgram cubeShaderProgram{"../Shaders/cube.vs", "../Shaders/phong_with_maps.fs"};
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // Light source
     Lighting pointLight{{-2.0f, -2.0f, 4.0f}, {{0.2f, 0.2f, 0.2f}, {0.5f, 0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}};
+    Lighting directionalLight{{1.0, 1.0, 1.0}, {glm::vec3{1}, glm::vec3{}, glm::vec3{}}};
     //Lighting pointLight{{2.0f, 2.0f, 4.0f}, directional_light};
-
-    lightSourceShaderProgram.use();
-    lightSourceShaderProgram.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-    lightSourceShaderProgram.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
-    lightSourceShaderProgram.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-    lightSourceShaderProgram.setVec3("material.ambient", glm::vec3{1.0f});
-    lightSourceShaderProgram.setVec3("material.specular", glm::vec3{1.0f});
-    lightSourceShaderProgram.setVec3("material.diffuse", glm::vec3{1.0f});
-    lightSourceShaderProgram.setFloat("material.shininess", 0);
 
     stbi_set_flip_vertically_on_load(true);
     glEnable(GL_DEPTH_TEST);
@@ -116,7 +108,9 @@ int main()
     backpackShaderProgram.setVec3("lightPos", lightSourcePos);
 
     MappedMaterial backpackMaterial{}, texturedCubeMaterial{};
-    Material cubeMaterial{{}, {0.7f, 0.3f, 0.1f}, {0.2f, 0.1f, 0.1f}};
+    Material cubeMaterial{{0.3f, 0.7f, 0.3f}, {0.7f, 0.3f, 0.1f}, {0.2f, 0.1f, 0.1f}},
+        lightSourceMaterial{glm::vec3{1.0}, {}, {}, 0};
+
 
     while (!glfwWindowShouldClose(window))
     {
@@ -132,11 +126,7 @@ int main()
         const auto projection = glm::perspective(glm::radians(mouse.zoom()), 800.0f / 600.0f, 0.1f, 100.0f);
 
         // Light source
-        lightSourceShaderProgram.use();
-        lightSourceShaderProgram.setMatrix4("view", view);
-        lightSourceShaderProgram.setMatrix4("projection", projection);
-        lightSourceShaderProgram.setMatrix4("model", lightSourceModel);
-
+        updateUberPhong(lightSourceShaderProgram, view, projection, lightSourceModel, {directionalLight}, lightSourceMaterial, c);
         lightSourceCube.Draw(lightSourceShaderProgram);
 
         // Textured Cube
