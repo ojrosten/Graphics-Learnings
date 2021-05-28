@@ -82,12 +82,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Shaders\Shader.vs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\Shaders\Shader.fs">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="..\Shaders\model_loading.vs">
       <Filter>Shaders</Filter>
     </None>
@@ -100,16 +94,7 @@
     <None Include="..\Shaders\cube.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="..\Shaders\textured_cube.vs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\Shaders\phong.fs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\Shaders\phong_with_maps.fs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\Shaders\phong_with_texture.fs">
+    <None Include="..\Shaders\uber_phong.fs">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

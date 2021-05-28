@@ -187,16 +187,11 @@
     <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Shaders\phong.fs" />
     <None Include="..\Shaders\cube.vs" />
     <None Include="..\Shaders\depth_testing.fs" />
     <None Include="..\Shaders\depth_testing.vs" />
-    <None Include="..\Shaders\phong_with_texture.fs" />
     <None Include="..\Shaders\model_loading.vs" />
-    <None Include="..\Shaders\Shader.fs" />
-    <None Include="..\Shaders\Shader.vs" />
-    <None Include="..\Shaders\phong_with_maps.fs" />
-    <None Include="..\Shaders\textured_cube.vs" />
+    <None Include="..\Shaders\uber_phong.fs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

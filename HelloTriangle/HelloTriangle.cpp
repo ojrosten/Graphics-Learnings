@@ -58,10 +58,10 @@ int main()
 
     using namespace Graphics;
 
-    ShaderProgram backpackShaderProgram{"../Shaders/model_loading.vs", "../Shaders/phong_with_maps.fs" };
-    ShaderProgram texturedCubeShaderProgram{"../Shaders/textured_cube.vs", "../Shaders/phong_with_maps.fs"};
-    ShaderProgram lightSourceShaderProgram{"../Shaders/cube.vs", "../Shaders/phong_with_maps.fs"};
-    ShaderProgram cubeShaderProgram{"../Shaders/cube.vs", "../Shaders/phong_with_maps.fs"};
+    ShaderProgram backpackShaderProgram{"../Shaders/model_loading.vs", "../Shaders/uber_phong.fs" };
+    ShaderProgram texturedCubeShaderProgram{"../Shaders/cube.vs", "../Shaders/uber_phong.fs"};
+    ShaderProgram lightSourceShaderProgram{"../Shaders/cube.vs", "../Shaders/uber_phong.fs"};
+    ShaderProgram cubeShaderProgram{"../Shaders/cube.vs", "../Shaders/uber_phong.fs"};
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -75,7 +75,7 @@ int main()
 
     std::cout << std::filesystem::current_path() << '\n';
 
-    Model ourModel(std::filesystem::current_path().parent_path() / "Images" / "backpack" / "backpack.obj");
+    Model backpack(std::filesystem::current_path().parent_path() / "Images" / "backpack" / "backpack.obj");
     Examples::Cube texturedCube{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/container2.png",
                                 "C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/container2_specular.png"};
     Examples::Cube lightSourceCube{""}, cube{""};
@@ -143,7 +143,7 @@ int main()
         // Backpack
         model = glm::rotate(model, fmodf(static_cast<float>(glm::radians(10.0f) * deltaTime), static_cast<float>(glm::radians(360.0))), glm::vec3(0.0f, 1.0f, 0.0f));
         updateUberPhong(backpackShaderProgram, view, projection, model, {pointLight}, {backpackMaterial}, c);
-        ourModel.Draw(backpackShaderProgram);
+        backpack.Draw(backpackShaderProgram);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
