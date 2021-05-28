@@ -8,12 +8,12 @@ namespace Graphics
     struct Material
     {
         glm::vec3 ambient{}, diffuse{}, specular{};
-        float shininess{32};
+        float shininess{16};
     };
 
     struct MappedMaterial
     {
-        float shininess{32};
+        float shininess{16};
         int diffuseIndex{}, specularIndex{1};
     };
 
