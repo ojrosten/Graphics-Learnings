@@ -23,15 +23,12 @@ namespace Graphics
         }
 
         VBOBinder(VBOBinder&& other) noexcept
-            : m_VBO{ other.get() }
-        {
-            other.m_VBO = 0;
-        }
+            : m_VBO{std::exchange(other.m_VBO, 0)}
+        {}
 
         VBOBinder& operator=(VBOBinder&& other) noexcept
         {
-            m_VBO = other.get();
-            m_VBO = 0;
+            m_VBO = std::exchange(other.m_VBO, 0);
         }
 
         ~VBOBinder()
@@ -62,15 +59,12 @@ namespace Graphics
         }
 
         VAOBinder(VAOBinder&& other) noexcept
-            : m_VAO{ other.get() }
-        {
-            other.m_VAO = 0;
-        }
+            : m_VAO{std::exchange(other.m_VAO, 0)}
+        {}
 
         VAOBinder& operator=(VAOBinder&& other) noexcept
         {
-            m_VAO = other.get();
-            m_VAO = 0;
+            m_VAO = std::exchange(other.m_VAO, 0);
         }
 
         ~VAOBinder()
@@ -101,15 +95,12 @@ namespace Graphics
         }
 
         EBOBinder(EBOBinder&& other) noexcept
-            : m_EBO{ other.get() }
-        {
-            other.m_EBO = 0;
-        }
+            : m_EBO{std::exchange(other.m_EBO, 0)}
+        {}
 
         EBOBinder& operator=(EBOBinder&& other) noexcept
         {
-            m_EBO = other.get();
-            m_EBO = 0;
+            m_EBO = std::exchange(other.m_EBO, 0);
         }
 
         ~EBOBinder()
@@ -144,15 +135,12 @@ namespace Graphics
         }
 
         TextureBinder(TextureBinder&& other) noexcept
-          : m_Texture{other.get()}
-        {
-          other.m_Texture = 0;
-        }
+          : m_Texture{std::exchange(other.m_Texture, 0)}
+        {}
 
         TextureBinder& operator=(TextureBinder&& other) noexcept
         {
-            m_Texture = other.get();
-            m_Texture = 0;
+            m_Texture = std::exchange(other.m_Texture, 0);
         }
 
         ~TextureBinder()
