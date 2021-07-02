@@ -84,18 +84,19 @@ namespace Graphics
     }
 
     void updateUberPhong(ShaderProgram& program,
-        const glm::highp_mat4& view,
-        const glm::highp_mat4& projection,
-        const glm::mat4& model,
-        const std::vector<Lighting>& lights,
-        const MaterialVariant& material,
-        const camera& c)
+                         const glm::highp_mat4& view,
+                         const glm::highp_mat4& projection,
+                         const glm::mat4& model,
+                         const std::vector<Lighting>& lights,
+                         const MaterialVariant& material,
+                         const camera& c)
     {
         program.use();
         program.setMatrix4("view", view);
         program.setMatrix4("projection", projection);
         program.setMatrix4("model", model);
         program.setVec3("viewPos", c.pos);
+        program.setInt("numLights", static_cast<int>(lights.size()));
 
         for(int i{}; i < lights.size(); ++i)
         {

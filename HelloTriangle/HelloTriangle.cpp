@@ -62,23 +62,24 @@ int main()
     ShaderProgram texturedCubeShaderProgram{"../Shaders/cube.vs", "../Shaders/uber_phong.fs"};
     ShaderProgram lightSourceShaderProgram{"../Shaders/cube.vs", "../Shaders/uber_phong.fs"};
     ShaderProgram cubeShaderProgram{"../Shaders/cube.vs", "../Shaders/uber_phong.fs"};
+    ShaderProgram scaledCubeShaderProgram{"../Shaders/cube.vs", "../Shaders/uber_phong.fs"};
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // Light source
-    Lighting pointLight{{-2.0f, -2.0f, 4.0f}, {{0.2f, 0.2f, 0.2f}, {0.5f, 0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}};
+    Lighting bottomLeftPointLight{{-2.0f, -2.0f, 4.0f}, {{0.2f, 0.2f, 0.2f}, {0.5f, 0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}},
+             topLeftPointLight{{-2.0f, 2.0f, 4.0f}, {{0.2f, 0.2f, 0.2f}, {0.5f, 0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}};
     Lighting directionalLight{{1.0, 1.0, 1.0}, {glm::vec3{1}, glm::vec3{}, glm::vec3{}}};
-    //Lighting pointLight{{2.0f, 2.0f, 4.0f}, directional_light};
+    //Lighting bottomLeftPointLight{{2.0f, 2.0f, 4.0f}, directional_light};
 
     stbi_set_flip_vertically_on_load(true);
-    glEnable(GL_DEPTH_TEST);
 
     std::cout << std::filesystem::current_path() << '\n';
 
     Model backpack(std::filesystem::current_path().parent_path() / "Images" / "backpack" / "backpack.obj");
     Examples::Cube texturedCube{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/container2.png",
                                 "C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/container2_specular.png"};
-    Examples::Cube lightSourceCube{""}, cube{""};
+    Examples::Cube lightSourceCube{""}, cube{""}, scaledCube{""};
 
 
     camera c{};
@@ -100,8 +101,13 @@ int main()
     cubeModel = glm::translate(cubeModel, glm::vec3(-2.0f, 1.0f, 2.0f));
     cubeModel = glm::scale(cubeModel, glm::vec3(0.5));
 
+    // Cube
+    glm::mat4 scaledCubeModel = glm::mat4(1.0f);
+    scaledCubeModel = glm::translate(scaledCubeModel, glm::vec3(-2.0f, 1.0f, 2.0f));
+    scaledCubeModel = glm::scale(scaledCubeModel, glm::vec3(0.52f));
+
     // Light Source
-    const glm::vec3 lightSourcePos{pointLight.directionality()};
+    const glm::vec3 lightSourcePos{bottomLeftPointLight.directionality()};
     glm::mat4 lightSourceModel = glm::mat4(1.0f);
     lightSourceModel = glm::translate(lightSourceModel, lightSourcePos); // translate it down so it's at the center of the scene
     lightSourceModel = glm::scale(lightSourceModel, glm::vec3(0.2f));
@@ -109,6 +115,7 @@ int main()
     MappedMaterial backpackMaterial{},
                    texturedCubeMaterial{32};
     Material cubeMaterial{{0.3f, 0.7f, 0.3f}, {0.7f, 0.3f, 0.1f}, {0.2f, 0.1f, 0.1f}},
+             scaledCubeMaterial{{1, 1, 1}, {}, {}},
              lightSourceMaterial{glm::vec3{1.0}, {}, {}, 0};
 
 
@@ -119,8 +126,12 @@ int main()
         lastFrame = currentFrame;
         c = processInput(window, c, deltaTime, mouse);
 
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_STENCIL_TEST);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glStencilMask(0x00);
 
         const auto view = glm::lookAt(c.pos, c.pos + c.front, c.up);
         const auto projection = glm::perspective(glm::radians(mouse.zoom()), 800.0f / 600.0f, 0.1f, 100.0f);
@@ -131,17 +142,28 @@ int main()
 
         // Textured Cube
         texturedCubeModel = glm::rotate(texturedCubeModel, fmodf(static_cast<float>(glm::radians(10.0f) * deltaTime), static_cast<float>(glm::radians(360.0))), glm::vec3(0.0f, 1.0f, 0.0f));
-        updateUberPhong(texturedCubeShaderProgram, view, projection, texturedCubeModel, {pointLight}, texturedCubeMaterial, c);
+        updateUberPhong(texturedCubeShaderProgram, view, projection, texturedCubeModel, {bottomLeftPointLight, topLeftPointLight}, texturedCubeMaterial, c);
         texturedCube.Draw(texturedCubeShaderProgram);
-
-        // Cube
-        updateUberPhong(cubeShaderProgram, view, projection, cubeModel, {pointLight}, cubeMaterial, c);
-        cube.Draw(cubeShaderProgram);
 
         // Backpack
         model = glm::rotate(model, fmodf(static_cast<float>(glm::radians(10.0f) * deltaTime), static_cast<float>(glm::radians(360.0))), glm::vec3(0.0f, 1.0f, 0.0f));
-        updateUberPhong(backpackShaderProgram, view, projection, model, {pointLight}, {backpackMaterial}, c);
+        updateUberPhong(backpackShaderProgram, view, projection, model, {bottomLeftPointLight, topLeftPointLight}, {backpackMaterial}, c);
         backpack.Draw(backpackShaderProgram);
+
+        glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
+        glStencilMask(0xFF); // enable writing to the stencil buffer;
+        // Cube
+        updateUberPhong(cubeShaderProgram, view, projection, cubeModel, {bottomLeftPointLight, topLeftPointLight}, cubeMaterial, c);
+        cube.Draw(cubeShaderProgram);
+
+        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+        glStencilMask(0x00); // disable writing to the stencil buffer
+        glDisable(GL_DEPTH_TEST);
+
+        // Scaled cube
+        updateUberPhong(scaledCubeShaderProgram, view, projection, scaledCubeModel, {bottomLeftPointLight, topLeftPointLight}, scaledCubeMaterial, c);
+        scaledCube.Draw(scaledCubeShaderProgram);
+
 
         glfwSwapBuffers(window);
         glfwPollEvents();

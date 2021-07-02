@@ -33,8 +33,11 @@ struct Light {
 
 
 uniform Material material;
-#define NUM_LIGHTS 1
-uniform Light light[NUM_LIGHTS];
+
+#define MAX_NUM_LIGHTS 8
+uniform Light light[MAX_NUM_LIGHTS];
+
+uniform int numLights = 0;
 
 uniform vec3 viewPos;
 
@@ -42,7 +45,7 @@ void main()
 {
     vec3 ambient, diffuse, specular;
 
-    for(int i=0; i<NUM_LIGHTS; ++i)
+    for(int i=0; i<numLights; ++i)
     {
         // Ambient
         vec3 matAmbient= material.textured ? vec3(texture(material.diffuseSampler, TexCoords)) : material.ambient;
