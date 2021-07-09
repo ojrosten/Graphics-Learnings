@@ -44,12 +44,14 @@ uniform vec3 viewPos;
 void main()
 {
     vec3 ambient, diffuse, specular;
+    vec4 matAmbient  = material.textured ? texture(material.diffuseSampler, TexCoords) : vec4(material.ambient, 1.0);
+    vec3 mattDiffuse = material.textured ? vec3(texture(material.diffuseSampler, TexCoords)) : material.diffuse;    
+    vec3 matSpecular = material.textured ? vec3(texture(material.specularSampler, TexCoords)) : material.specular;
 
     for(int i=0; i<numLights; ++i)
     {
         // Ambient
-        vec3 matAmbient= material.textured ? vec3(texture(material.diffuseSampler, TexCoords)) : material.ambient;
-        vec3 localAmbient = matAmbient * light[i].ambient;
+        vec3 localAmbient = matAmbient.xyz * light[i].ambient;
 
         // Diffuse
         vec3 norm = normalize(Normal);
@@ -58,7 +60,6 @@ void main()
         vec3 lightDir = normalize(rawLightDir);
 
         float diff = max(dot(norm, lightDir), 0.0);
-        vec3 mattDiffuse = material.textured ? vec3(texture(material.diffuseSampler, TexCoords)) : material.diffuse;
         vec3 localDiffuse = diff * mattDiffuse * light[i].diffuse;
 
         // Specular
@@ -67,7 +68,6 @@ void main()
 
         float dotProd = dot(viewDir, reflectDir);
         float spec = dotProd >  0 ? pow(max(dotProd, 0.0), material.shininess) : 1.0;
-        vec3 matSpecular = material.textured ? vec3(texture(material.specularSampler, TexCoords)) : material.specular;
         vec3 localSpecular = spec * matSpecular * light[i].specular;
 
         // Attenuation
@@ -94,5 +94,5 @@ void main()
         specular += localSpecular;
     }
 
-    FragColor = vec4(ambient + diffuse + specular, 1.0);
+    FragColor = vec4(ambient + diffuse + specular, matAmbient.w);
 }
