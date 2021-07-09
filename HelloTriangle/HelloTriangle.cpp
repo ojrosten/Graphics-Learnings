@@ -120,9 +120,12 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+
     glEnable(GL_STENCIL_TEST);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    
+    glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -130,8 +133,6 @@ int main()
         const auto deltaTime{currentFrame - lastFrame};
         lastFrame = currentFrame;
         c = processInput(window, c, deltaTime, mouse);
-
-        glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 
         glStencilMask(0xFF);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -168,7 +169,6 @@ int main()
         // Scaled cube
         updateUberPhong(scaledCubeShaderProgram, view, projection, scaledCubeModel, {bottomLeftPointLight, topLeftPointLight}, scaledCubeMaterial, c);
         scaledCube.Draw(scaledCubeShaderProgram);
-
 
         glfwSwapBuffers(window);
         glfwPollEvents();
