@@ -118,6 +118,11 @@ int main()
              scaledCubeMaterial{{1, 1, 1}, {}, {}},
              lightSourceMaterial{glm::vec3{1.0}, {}, {}, 0};
 
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -126,9 +131,6 @@ int main()
         lastFrame = currentFrame;
         c = processInput(window, c, deltaTime, mouse);
 
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_STENCIL_TEST);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         glStencilMask(0x00);
@@ -163,6 +165,9 @@ int main()
         // Scaled cube
         updateUberPhong(scaledCubeShaderProgram, view, projection, scaledCubeModel, {bottomLeftPointLight, topLeftPointLight}, scaledCubeMaterial, c);
         scaledCube.Draw(scaledCubeShaderProgram);
+
+        glStencilMask(0xFF);
+        glEnable(GL_DEPTH_TEST);
 
 
         glfwSwapBuffers(window);
