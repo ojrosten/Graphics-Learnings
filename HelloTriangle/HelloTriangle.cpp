@@ -115,7 +115,7 @@ int main()
     MappedMaterial backpackMaterial{},
                    texturedCubeMaterial{32};
     Material cubeMaterial{{0.3f, 0.7f, 0.3f}, {0.7f, 0.3f, 0.1f}, {0.2f, 0.1f, 0.1f}},
-             scaledCubeMaterial{{1, 1, 1}, {}, {}},
+             scaledCubeMaterial{{1, 1, 0}, {}, {}},
              lightSourceMaterial{glm::vec3{1.0}, {}, {}, 0};
 
     glEnable(GL_DEPTH_TEST);
@@ -132,8 +132,11 @@ int main()
         c = processInput(window, c, deltaTime, mouse);
 
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
+
+        glStencilMask(0xFF);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         glStencilMask(0x00);
+        glEnable(GL_DEPTH_TEST);
 
         const auto view = glm::lookAt(c.pos, c.pos + c.front, c.up);
         const auto projection = glm::perspective(glm::radians(mouse.zoom()), 800.0f / 600.0f, 0.1f, 100.0f);
@@ -165,9 +168,6 @@ int main()
         // Scaled cube
         updateUberPhong(scaledCubeShaderProgram, view, projection, scaledCubeModel, {bottomLeftPointLight, topLeftPointLight}, scaledCubeMaterial, c);
         scaledCube.Draw(scaledCubeShaderProgram);
-
-        glStencilMask(0xFF);
-        glEnable(GL_DEPTH_TEST);
 
 
         glfwSwapBuffers(window);
