@@ -94,5 +94,8 @@ void main()
         specular += localSpecular;
     }
 
+    if(matAmbient.a < 0.1)
+        discard;
+
     FragColor = vec4(ambient + diffuse + specular, matAmbient.w);
 }

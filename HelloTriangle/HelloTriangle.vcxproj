@@ -166,6 +166,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\..\Graphics\OpenGL\src\glad.c" />
     <ClCompile Include="Examples\Cubes.cpp" />
+    <ClCompile Include="Examples\Quad.cpp" />
     <ClCompile Include="HelloTriangle.cpp" />
     <ClCompile Include="ImageUploader.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="Binder.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Examples\Cubes.h" />
+    <ClInclude Include="Examples\Quad.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="InputProcessing.h" />
     <ClInclude Include="Lighting.h" />
@@ -191,6 +193,7 @@
     <None Include="..\Shaders\depth_testing.fs" />
     <None Include="..\Shaders\depth_testing.vs" />
     <None Include="..\Shaders\model_loading.vs" />
+    <None Include="..\Shaders\quad.vs" />
     <None Include="..\Shaders\uber_phong.fs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

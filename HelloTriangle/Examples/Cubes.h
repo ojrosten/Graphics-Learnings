@@ -21,16 +21,16 @@ namespace Graphics::Examples
   private:
     VBOBinder vbo{};
     VAOBinder vao{};
-    EBOBinder ebo{};
+    //EBOBinder ebo{};
     TextureBinder texture, specTexture;
 
     constexpr static std::size_t cols{8};
     constexpr static std::size_t rows{36};
 
-    constexpr static std::array<unsigned, 6> indices{
-        0, 1, 3,   // first triangle
-        1, 2, 3    // second triangle
-    };
+    //constexpr static std::array<unsigned, 6> indices{
+    //    0, 1, 3,   // first triangle
+    //    1, 2, 3    // second triangle
+    //};
 
     constexpr static std::array<float, cols* rows> vertices{
       -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  0.0f, 0.0f, -1.0f,

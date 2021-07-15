@@ -9,6 +9,7 @@
 #include "Model.h"
 #include "Lighting.h"
 #include "Examples/Cubes.h"
+#include "Examples/Quad.h"
 
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -63,6 +64,7 @@ int main()
     ShaderProgram lightSourceShaderProgram{"../Shaders/cube.vs", "../Shaders/uber_phong.fs"};
     ShaderProgram cubeShaderProgram{"../Shaders/cube.vs", "../Shaders/uber_phong.fs"};
     ShaderProgram scaledCubeShaderProgram{"../Shaders/cube.vs", "../Shaders/uber_phong.fs"};
+    ShaderProgram grassShaderProgram{"../Shaders/quad.vs", "../Shaders/uber_phong.fs"};
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -80,7 +82,7 @@ int main()
     Examples::Cube texturedCube{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/container2.png",
                                 "C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/container2_specular.png"};
     Examples::Cube lightSourceCube{""}, cube{""}, scaledCube{""};
-
+    Examples::Quad grass{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/grass.png"};
 
     camera c{};
     Input::Mouse mouse{};
@@ -101,10 +103,15 @@ int main()
     cubeModel = glm::translate(cubeModel, glm::vec3(-2.0f, 1.0f, 2.0f));
     cubeModel = glm::scale(cubeModel, glm::vec3(0.5));
 
-    // Cube
+    // Scaled Cube
     glm::mat4 scaledCubeModel = glm::mat4(1.0f);
     scaledCubeModel = glm::translate(scaledCubeModel, glm::vec3(-2.0f, 1.0f, 2.0f));
     scaledCubeModel = glm::scale(scaledCubeModel, glm::vec3(0.52f));
+
+    // Grass
+
+    glm::mat4 grassModel = glm::mat4(1.0f);
+    grassModel = glm::translate(grassModel, glm::vec3(-2.0f, 0, 2.5f));
 
     // Light Source
     const glm::vec3 lightSourcePos{bottomLeftPointLight.directionality()};
@@ -113,7 +120,8 @@ int main()
     lightSourceModel = glm::scale(lightSourceModel, glm::vec3(0.2f));
 
     MappedMaterial backpackMaterial{},
-                   texturedCubeMaterial{32};
+                   texturedCubeMaterial{32}, 
+                   grassMaterial{};
     Material cubeMaterial{{0.3f, 0.7f, 0.3f}, {0.7f, 0.3f, 0.1f}, {0.2f, 0.1f, 0.1f}},
              scaledCubeMaterial{{1, 1, 0}, {}, {}},
              lightSourceMaterial{glm::vec3{1.0}, {}, {}, 0};
@@ -155,6 +163,11 @@ int main()
         model = glm::rotate(model, fmodf(static_cast<float>(glm::radians(10.0f) * deltaTime), static_cast<float>(glm::radians(360.0))), glm::vec3(0.0f, 1.0f, 0.0f));
         updateUberPhong(backpackShaderProgram, view, projection, model, {bottomLeftPointLight, topLeftPointLight}, {backpackMaterial}, c);
         backpack.Draw(backpackShaderProgram);
+
+        // Grass
+        updateUberPhong(grassShaderProgram, view, projection, grassModel, {bottomLeftPointLight, topLeftPointLight}, grassMaterial, c);
+        grass.Draw(grassShaderProgram);
+
 
         glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
         glStencilMask(0xFF); // enable writing to the stencil buffer;

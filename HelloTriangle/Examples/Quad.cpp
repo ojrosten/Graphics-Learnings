@@ -1,11 +1,11 @@
-#include "Cubes.h"
+#include "Quad.h"
 
 #include "../Binder.h"
 #include "../Shader.h"
 
 namespace Graphics::Examples
 {
-  Cube::Cube(const std::filesystem::path& texPath, const std::filesystem::path& specMapPath)
+  Quad::Quad(const std::filesystem::path& texPath, const std::filesystem::path& specMapPath)
     : texture{GL_TEXTURE0, texPath}
     , specTexture{GL_TEXTURE1, specMapPath}
   {
@@ -17,12 +17,9 @@ namespace Graphics::Examples
 
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, cols * sizeof(float), (void*)(3 * sizeof(float))); // VAO
     glEnableVertexAttribArray(1);
-
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, cols * sizeof(float), (void*)(5 * sizeof(float))); // VAO
-    glEnableVertexAttribArray(2);
   }
 
-  void Cube::Draw(Graphics::ShaderProgram&)
+  void Quad::Draw(Graphics::ShaderProgram&)
   {
     vbo.bind();
     vao.bind();
@@ -30,6 +27,6 @@ namespace Graphics::Examples
     texture.bind();
     specTexture.bind();
 
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
   }
 }

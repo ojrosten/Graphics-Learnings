@@ -42,6 +42,9 @@
     <ClCompile Include="Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Examples\Quad.cpp">
+      <Filter>Examples</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\ImageUpload\stb_image.h">
@@ -80,6 +83,9 @@
     <ClInclude Include="Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Examples\Quad.h">
+      <Filter>Examples</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shaders\model_loading.vs">
@@ -95,6 +101,9 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="..\Shaders\uber_phong.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\quad.vs">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
