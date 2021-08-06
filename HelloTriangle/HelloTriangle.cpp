@@ -65,6 +65,7 @@ int main()
     ShaderProgram cubeShaderProgram{"../Shaders/cube.vs", "../Shaders/uber_phong.fs"};
     ShaderProgram scaledCubeShaderProgram{"../Shaders/cube.vs", "../Shaders/uber_phong.fs"};
     ShaderProgram grassShaderProgram{"../Shaders/quad.vs", "../Shaders/uber_phong.fs"};
+    ShaderProgram windowShaderProgram{"../Shaders/quad.vs", "../Shaders/uber_phong.fs"};
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -82,7 +83,8 @@ int main()
     Examples::Cube texturedCube{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/container2.png",
                                 "C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/container2_specular.png"};
     Examples::Cube lightSourceCube{""}, cube{""}, scaledCube{""};
-    Examples::Quad grass{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/grass.png"};
+    Examples::Quad grass{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/grass.png"},
+                   windowPane{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/window.png"};
 
     camera c{};
     Input::Mouse mouse{};
@@ -109,9 +111,12 @@ int main()
     scaledCubeModel = glm::scale(scaledCubeModel, glm::vec3(0.52f));
 
     // Grass
-
     glm::mat4 grassModel = glm::mat4(1.0f);
     grassModel = glm::translate(grassModel, glm::vec3(-2.0f, 0, 2.5f));
+
+    // Window
+    glm::mat4 windowModel = glm::mat4(1.0f);
+    windowModel = glm::translate(windowModel, glm::vec3(-2.0f, 0, 2.6f));
 
     // Light Source
     const glm::vec3 lightSourcePos{bottomLeftPointLight.directionality()};
@@ -121,7 +126,8 @@ int main()
 
     MappedMaterial backpackMaterial{},
                    texturedCubeMaterial{32}, 
-                   grassMaterial{};
+                   grassMaterial{},
+                   windowMaterial{};
     Material cubeMaterial{{0.3f, 0.7f, 0.3f}, {0.7f, 0.3f, 0.1f}, {0.2f, 0.1f, 0.1f}},
              scaledCubeMaterial{{1, 1, 0}, {}, {}},
              lightSourceMaterial{glm::vec3{1.0}, {}, {}, 0};
@@ -134,6 +140,9 @@ int main()
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     
     glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -167,6 +176,10 @@ int main()
         // Grass
         updateUberPhong(grassShaderProgram, view, projection, grassModel, {bottomLeftPointLight, topLeftPointLight}, grassMaterial, 0.1f, c);
         grass.Draw(grassShaderProgram);
+
+        // Window
+        updateUberPhong(windowShaderProgram, view, projection, windowModel, {bottomLeftPointLight, topLeftPointLight}, windowMaterial, 0, c);
+        windowPane.Draw(windowShaderProgram);
 
 
         glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
