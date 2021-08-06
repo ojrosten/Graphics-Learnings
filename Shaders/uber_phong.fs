@@ -41,6 +41,8 @@ uniform int numLights = 0;
 
 uniform vec3 viewPos;
 
+uniform float alphaThreshold = 0;
+
 void main()
 {
     vec3 ambient, diffuse, specular;
@@ -94,7 +96,7 @@ void main()
         specular += localSpecular;
     }
 
-    if(matAmbient.a < 0.1)
+    if(matAmbient.a < alphaThreshold)
         discard;
 
     FragColor = vec4(ambient + diffuse + specular, matAmbient.w);

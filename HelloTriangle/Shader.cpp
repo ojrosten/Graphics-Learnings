@@ -89,6 +89,7 @@ namespace Graphics
                          const glm::mat4& model,
                          const std::vector<Lighting>& lights,
                          const MaterialVariant& material,
+                         const float alphaThreshold,
                          const camera& c)
     {
         program.use();
@@ -97,6 +98,7 @@ namespace Graphics
         program.setMatrix4("model", model);
         program.setVec3("viewPos", c.pos);
         program.setInt("numLights", static_cast<int>(lights.size()));
+        program.setFloat("alphaThreshold", alphaThreshold);
 
         for(int i{}; i < lights.size(); ++i)
         {

@@ -151,28 +151,28 @@ int main()
         const auto projection = glm::perspective(glm::radians(mouse.zoom()), 800.0f / 600.0f, 0.1f, 100.0f);
 
         // Light source
-        updateUberPhong(lightSourceShaderProgram, view, projection, lightSourceModel, {directionalLight}, lightSourceMaterial, c);
+        updateUberPhong(lightSourceShaderProgram, view, projection, lightSourceModel, {directionalLight}, lightSourceMaterial, 0, c);
         lightSourceCube.Draw(lightSourceShaderProgram);
 
         // Textured Cube
         texturedCubeModel = glm::rotate(texturedCubeModel, fmodf(static_cast<float>(glm::radians(10.0f) * deltaTime), static_cast<float>(glm::radians(360.0))), glm::vec3(0.0f, 1.0f, 0.0f));
-        updateUberPhong(texturedCubeShaderProgram, view, projection, texturedCubeModel, {bottomLeftPointLight, topLeftPointLight}, texturedCubeMaterial, c);
+        updateUberPhong(texturedCubeShaderProgram, view, projection, texturedCubeModel, {bottomLeftPointLight, topLeftPointLight}, texturedCubeMaterial, 0, c);
         texturedCube.Draw(texturedCubeShaderProgram);
 
         // Backpack
         model = glm::rotate(model, fmodf(static_cast<float>(glm::radians(10.0f) * deltaTime), static_cast<float>(glm::radians(360.0))), glm::vec3(0.0f, 1.0f, 0.0f));
-        updateUberPhong(backpackShaderProgram, view, projection, model, {bottomLeftPointLight, topLeftPointLight}, {backpackMaterial}, c);
+        updateUberPhong(backpackShaderProgram, view, projection, model, {bottomLeftPointLight, topLeftPointLight}, {backpackMaterial}, 0, c);
         backpack.Draw(backpackShaderProgram);
 
         // Grass
-        updateUberPhong(grassShaderProgram, view, projection, grassModel, {bottomLeftPointLight, topLeftPointLight}, grassMaterial, c);
+        updateUberPhong(grassShaderProgram, view, projection, grassModel, {bottomLeftPointLight, topLeftPointLight}, grassMaterial, 0.1f, c);
         grass.Draw(grassShaderProgram);
 
 
         glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
         glStencilMask(0xFF); // enable writing to the stencil buffer;
         // Cube
-        updateUberPhong(cubeShaderProgram, view, projection, cubeModel, {bottomLeftPointLight, topLeftPointLight}, cubeMaterial, c);
+        updateUberPhong(cubeShaderProgram, view, projection, cubeModel, {bottomLeftPointLight, topLeftPointLight}, cubeMaterial, 0, c);
         cube.Draw(cubeShaderProgram);
 
         glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
@@ -180,7 +180,7 @@ int main()
         glDisable(GL_DEPTH_TEST);
 
         // Scaled cube
-        updateUberPhong(scaledCubeShaderProgram, view, projection, scaledCubeModel, {bottomLeftPointLight, topLeftPointLight}, scaledCubeMaterial, c);
+        updateUberPhong(scaledCubeShaderProgram, view, projection, scaledCubeModel, {bottomLeftPointLight, topLeftPointLight}, scaledCubeMaterial, 0, c);
         scaledCube.Draw(scaledCubeShaderProgram);
 
         glfwSwapBuffers(window);

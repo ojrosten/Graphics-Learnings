@@ -116,5 +116,6 @@ namespace Graphics
                          const glm::mat4& model,
                          const std::vector<Lighting>& lights,
                          const MaterialVariant& material,
+                         const float alphaThreshold,
                          const camera& c);
 }
