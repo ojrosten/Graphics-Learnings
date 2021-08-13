@@ -22,6 +22,8 @@ namespace Graphics
             bind();
         }
 
+        VBOBinder(const VBOBinder&) = delete;
+
         VBOBinder(VBOBinder&& other) noexcept
             : m_VBO{std::exchange(other.m_VBO, 0)}
         {}
@@ -30,6 +32,8 @@ namespace Graphics
         {
             m_VBO = std::exchange(other.m_VBO, 0);
         }
+
+        VBOBinder& operator=(const VBOBinder& other) = delete;
 
         ~VBOBinder()
         {
@@ -136,11 +140,13 @@ namespace Graphics
 
         TextureBinder(TextureBinder&& other) noexcept
           : m_Texture{std::exchange(other.m_Texture, 0)}
+          , m_gl_texture{std::exchange(other.m_gl_texture, 0)}
         {}
 
         TextureBinder& operator=(TextureBinder&& other) noexcept
         {
             m_Texture = std::exchange(other.m_Texture, 0);
+            m_gl_texture = std::exchange(other.m_gl_texture, 0);
         }
 
         ~TextureBinder()

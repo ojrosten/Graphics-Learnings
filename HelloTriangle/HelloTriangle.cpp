@@ -10,6 +10,7 @@
 #include "Lighting.h"
 #include "Examples/Cubes.h"
 #include "Examples/Quad.h"
+#include "Renderable.h"
 
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -59,13 +60,20 @@ int main()
 
     using namespace Graphics;
 
+
+    using RenderablesVariant = Renderable<Model, Examples::Cube, Examples::Quad>;
+
+    std::vector<RenderablesVariant> renderables{};
+
+    
+
     ShaderProgram backpackShaderProgram{"../Shaders/model_loading.vs", "../Shaders/uber_phong.fs" };
     ShaderProgram texturedCubeShaderProgram{"../Shaders/cube.vs", "../Shaders/uber_phong.fs"};
     ShaderProgram lightSourceShaderProgram{"../Shaders/cube.vs", "../Shaders/uber_phong.fs"};
     ShaderProgram cubeShaderProgram{"../Shaders/cube.vs", "../Shaders/uber_phong.fs"};
     ShaderProgram scaledCubeShaderProgram{"../Shaders/cube.vs", "../Shaders/uber_phong.fs"};
     ShaderProgram grassShaderProgram{"../Shaders/quad.vs", "../Shaders/uber_phong.fs"};
-    ShaderProgram windowShaderProgram{"../Shaders/quad.vs", "../Shaders/uber_phong.fs"};
+    //ShaderProgram windowShaderProgram{"../Shaders/quad.vs", "../Shaders/uber_phong.fs"};
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -79,12 +87,14 @@ int main()
 
     std::cout << std::filesystem::current_path() << '\n';
 
+
+
     Model backpack(std::filesystem::current_path().parent_path() / "Images" / "backpack" / "backpack.obj");
     Examples::Cube texturedCube{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/container2.png",
                                 "C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/container2_specular.png"};
     Examples::Cube lightSourceCube{""}, cube{""}, scaledCube{""};
-    Examples::Quad grass{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/grass.png"},
-                   windowPane{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/window.png"};
+    Examples::Quad grass{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/grass.png"}/*,
+                   windowPane{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/window.png"}*/;
 
     camera c{};
     Input::Mouse mouse{};
@@ -132,6 +142,17 @@ int main()
              scaledCubeMaterial{{1, 1, 0}, {}, {}},
              lightSourceMaterial{glm::vec3{1.0}, {}, {}, 0};
 
+
+    renderables.emplace_back(
+        Examples::Quad{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/window.png"},
+        RenderData{
+            ShaderProgram{"../Shaders/quad.vs", "../Shaders/uber_phong.fs"},
+            windowModel,
+            {bottomLeftPointLight, topLeftPointLight},
+            windowMaterial,
+            0
+        });
+
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
@@ -177,9 +198,14 @@ int main()
         updateUberPhong(grassShaderProgram, view, projection, grassModel, {bottomLeftPointLight, topLeftPointLight}, grassMaterial, 0.1f, c);
         grass.Draw(grassShaderProgram);
 
-        // Window
-        updateUberPhong(windowShaderProgram, view, projection, windowModel, {bottomLeftPointLight, topLeftPointLight}, windowMaterial, 0, c);
-        windowPane.Draw(windowShaderProgram);
+        //// Window
+        //updateUberPhong(windowShaderProgram, view, projection, windowModel, {bottomLeftPointLight, topLeftPointLight}, windowMaterial, 0, c);
+        //windowPane.Draw(windowShaderProgram);
+
+        for(auto& r : renderables)
+        {
+            r.draw(view, projection, c);
+        }
 
 
         glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test

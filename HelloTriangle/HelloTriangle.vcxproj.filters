@@ -45,6 +45,9 @@
     <ClCompile Include="Examples\Quad.cpp">
       <Filter>Examples</Filter>
     </ClCompile>
+    <ClCompile Include="Renderable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\ImageUpload\stb_image.h">
@@ -85,6 +88,9 @@
     </ClInclude>
     <ClInclude Include="Examples\Quad.h">
       <Filter>Examples</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderable.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

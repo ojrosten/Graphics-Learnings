@@ -51,7 +51,7 @@ namespace Graphics
     class ShaderProgram
     {
     public:
-        ShaderProgram(const char* vertexPath, const char* fragmentPath);
+        ShaderProgram(std::filesystem::path vertexShader, std::filesystem::path fragmentShader);
 
         void use()
         {

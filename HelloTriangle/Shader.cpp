@@ -42,7 +42,7 @@ namespace Graphics
 
     }
 
-    ShaderProgram::ShaderProgram(const char* vertexPath, const char* fragmentPath)
+    ShaderProgram::ShaderProgram(std::filesystem::path vertexShader, std::filesystem::path fragmentShader)
     {
         std::string vertexCode;
         std::string fragmentCode;
@@ -54,8 +54,8 @@ namespace Graphics
         try
         {
             // open files
-            vShaderFile.open(vertexPath);
-            fShaderFile.open(fragmentPath);
+            vShaderFile.open(vertexShader.string().data());
+            fShaderFile.open(fragmentShader.string().data());
             std::stringstream vShaderStream, fShaderStream;
             // read file's buffer contents into streams
             vShaderStream << vShaderFile.rdbuf();
