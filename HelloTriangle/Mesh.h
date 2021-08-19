@@ -26,7 +26,8 @@ namespace Graphics
         std::filesystem::path file;
     };
 
-    class Mesh {
+    class Mesh
+    {
     public:
         // mesh data
         Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);

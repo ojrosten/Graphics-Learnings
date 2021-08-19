@@ -53,6 +53,15 @@ namespace Graphics
     public:
         ShaderProgram(std::filesystem::path vertexShader, std::filesystem::path fragmentShader);
 
+        ShaderProgram(ShaderProgram&& other) noexcept
+            : m_ID{std::exchange(other.m_ID, 0)}
+        {}
+
+        ShaderProgram& operator=(ShaderProgram&& other) noexcept
+        {
+            m_ID = std::exchange(other.m_ID, 0);
+        }
+
         void use()
         {
             glUseProgram(m_ID);

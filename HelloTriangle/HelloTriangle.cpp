@@ -36,8 +36,8 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    auto window{ glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL) };
-    if (!window)
+    auto window{glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL)};
+    if(!window)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -49,7 +49,7 @@ int main()
     glfwSetCursorPosCallback(window, Input::Mouse::mouse_callback);
     glfwSetScrollCallback(window, Input::Mouse::scroll_callback);
 
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
@@ -63,17 +63,11 @@ int main()
 
     using RenderablesVariant = Renderable<Model, Examples::Cube, Examples::Quad>;
 
-    std::vector<RenderablesVariant> renderables{};
+    std::vector<RenderablesVariant> opaqueRenderables{}, transparentRenderables{};
 
-    
 
-    ShaderProgram backpackShaderProgram{"../Shaders/model_loading.vs", "../Shaders/uber_phong.fs" };
-    ShaderProgram texturedCubeShaderProgram{"../Shaders/cube.vs", "../Shaders/uber_phong.fs"};
-    ShaderProgram lightSourceShaderProgram{"../Shaders/cube.vs", "../Shaders/uber_phong.fs"};
     ShaderProgram cubeShaderProgram{"../Shaders/cube.vs", "../Shaders/uber_phong.fs"};
     ShaderProgram scaledCubeShaderProgram{"../Shaders/cube.vs", "../Shaders/uber_phong.fs"};
-    ShaderProgram grassShaderProgram{"../Shaders/quad.vs", "../Shaders/uber_phong.fs"};
-    //ShaderProgram windowShaderProgram{"../Shaders/quad.vs", "../Shaders/uber_phong.fs"};
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -87,18 +81,11 @@ int main()
 
     std::cout << std::filesystem::current_path() << '\n';
 
-
-
-    Model backpack(std::filesystem::current_path().parent_path() / "Images" / "backpack" / "backpack.obj");
-    Examples::Cube texturedCube{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/container2.png",
-                                "C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/container2_specular.png"};
-    Examples::Cube lightSourceCube{""}, cube{""}, scaledCube{""};
-    Examples::Quad grass{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/grass.png"}/*,
-                   windowPane{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/window.png"}*/;
+    Examples::Cube cube{""}, scaledCube{""};
 
     camera c{};
     Input::Mouse mouse{};
-    double lastFrame{ glfwGetTime() };
+    double lastFrame{glfwGetTime()};
 
     // Backpack
     glm::mat4 model = glm::mat4(1.0f);
@@ -134,22 +121,58 @@ int main()
     lightSourceModel = glm::translate(lightSourceModel, lightSourcePos); // translate it down so it's at the center of the scene
     lightSourceModel = glm::scale(lightSourceModel, glm::vec3(0.2f));
 
-    MappedMaterial backpackMaterial{},
-                   texturedCubeMaterial{32}, 
-                   grassMaterial{},
-                   windowMaterial{};
     Material cubeMaterial{{0.3f, 0.7f, 0.3f}, {0.7f, 0.3f, 0.1f}, {0.2f, 0.1f, 0.1f}},
-             scaledCubeMaterial{{1, 1, 0}, {}, {}},
-             lightSourceMaterial{glm::vec3{1.0}, {}, {}, 0};
+        scaledCubeMaterial{{1, 1, 0}, {}, {}};
 
 
-    renderables.emplace_back(
+    opaqueRenderables.emplace_back(
+        Model{std::filesystem::current_path().parent_path() / "Images" / "backpack" / "backpack.obj"},
+        RenderData{
+            {"../Shaders/model_loading.vs", "../Shaders/uber_phong.fs" },
+            model,
+            {bottomLeftPointLight, topLeftPointLight},
+            MappedMaterial{},
+            0
+        });
+
+    opaqueRenderables.emplace_back(
+        Examples::Cube{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/container2.png",
+                      "C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/container2_specular.png"},
+        RenderData{
+            {"../Shaders/cube.vs", "../Shaders/uber_phong.fs"},
+            texturedCubeModel,
+            {bottomLeftPointLight, topLeftPointLight},
+            MappedMaterial{32},
+            0
+        });
+
+    opaqueRenderables.emplace_back(
+        Examples::Cube{""},
+        RenderData{
+            {"../Shaders/cube.vs", "../Shaders/uber_phong.fs"},
+            lightSourceModel,
+            {directionalLight},
+            Material{glm::vec3{1.0}, {}, {}, 0},
+            0
+        });
+
+    transparentRenderables.emplace_back(
+        Examples::Quad{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/grass.png"},
+        RenderData{
+            {"../Shaders/quad.vs", "../Shaders/uber_phong.fs"},
+            grassModel,
+            {bottomLeftPointLight, topLeftPointLight},
+            MappedMaterial{},
+            0.1f
+        });
+
+    transparentRenderables.emplace_back(
         Examples::Quad{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/window.png"},
         RenderData{
-            ShaderProgram{"../Shaders/quad.vs", "../Shaders/uber_phong.fs"},
+            {"../Shaders/quad.vs", "../Shaders/uber_phong.fs"},
             windowModel,
             {bottomLeftPointLight, topLeftPointLight},
-            windowMaterial,
+            MappedMaterial{},
             0
         });
 
@@ -180,29 +203,21 @@ int main()
         const auto view = glm::lookAt(c.pos, c.pos + c.front, c.up);
         const auto projection = glm::perspective(glm::radians(mouse.zoom()), 800.0f / 600.0f, 0.1f, 100.0f);
 
-        // Light source
-        updateUberPhong(lightSourceShaderProgram, view, projection, lightSourceModel, {directionalLight}, lightSourceMaterial, 0, c);
-        lightSourceCube.Draw(lightSourceShaderProgram);
-
         // Textured Cube
-        texturedCubeModel = glm::rotate(texturedCubeModel, fmodf(static_cast<float>(glm::radians(10.0f) * deltaTime), static_cast<float>(glm::radians(360.0))), glm::vec3(0.0f, 1.0f, 0.0f));
-        updateUberPhong(texturedCubeShaderProgram, view, projection, texturedCubeModel, {bottomLeftPointLight, topLeftPointLight}, texturedCubeMaterial, 0, c);
-        texturedCube.Draw(texturedCubeShaderProgram);
+        //texturedCubeModel = glm::rotate(texturedCubeModel, fmodf(static_cast<float>(glm::radians(10.0f) * deltaTime), static_cast<float>(glm::radians(360.0))), glm::vec3(0.0f, 1.0f, 0.0f));
+
 
         // Backpack
-        model = glm::rotate(model, fmodf(static_cast<float>(glm::radians(10.0f) * deltaTime), static_cast<float>(glm::radians(360.0))), glm::vec3(0.0f, 1.0f, 0.0f));
+        /*model = glm::rotate(model, fmodf(static_cast<float>(glm::radians(10.0f) * deltaTime), static_cast<float>(glm::radians(360.0))), glm::vec3(0.0f, 1.0f, 0.0f));
         updateUberPhong(backpackShaderProgram, view, projection, model, {bottomLeftPointLight, topLeftPointLight}, {backpackMaterial}, 0, c);
-        backpack.Draw(backpackShaderProgram);
+        backpack.Draw(backpackShaderProgram);*/
 
-        // Grass
-        updateUberPhong(grassShaderProgram, view, projection, grassModel, {bottomLeftPointLight, topLeftPointLight}, grassMaterial, 0.1f, c);
-        grass.Draw(grassShaderProgram);
+        for(auto& r : opaqueRenderables)
+        {
+            r.draw(view, projection, c);
+        }
 
-        //// Window
-        //updateUberPhong(windowShaderProgram, view, projection, windowModel, {bottomLeftPointLight, topLeftPointLight}, windowMaterial, 0, c);
-        //windowPane.Draw(windowShaderProgram);
-
-        for(auto& r : renderables)
+        for(auto& r : transparentRenderables)
         {
             r.draw(view, projection, c);
         }
