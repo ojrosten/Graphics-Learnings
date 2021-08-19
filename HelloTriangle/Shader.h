@@ -34,6 +34,15 @@ namespace Graphics
     public:
         ShaderCompiler(GLuint shaderType, std::string_view shaderSource, std::string_view shaderName);
 
+        ShaderCompiler(ShaderCompiler&& other)
+            : m_Shader{std::exchange(other.m_Shader, 0)}
+        {}
+
+        ShaderCompiler& operator=(ShaderCompiler&& other)
+        {
+            m_Shader = std::exchange(other.m_Shader, 0);
+        }
+
         [[nodiscard]]
         GLuint get() const noexcept
         {
