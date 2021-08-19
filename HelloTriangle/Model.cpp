@@ -38,9 +38,9 @@ namespace Graphics
         return textureID;
     }
 
-    void Model::Draw(ShaderProgram& shader) const
+    void Model::Draw(ShaderProgram& shader)
     {
-        for (const auto& m : m_Meshes)
+        for (auto& m : m_Meshes)
             m.Draw(shader);
     }
     void Model::loadModel(const std::filesystem::path& path)
@@ -73,6 +73,7 @@ namespace Graphics
             processNode(node->mChildren[i], scene);
         }
     }
+
     Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
     {
         std::vector<Vertex> vertices;
@@ -152,7 +153,7 @@ namespace Graphics
         textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
 
-        return Mesh(vertices, indices, textures);
+        return Mesh{vertices, indices, textures};
     }
 
     std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string_view typeName)

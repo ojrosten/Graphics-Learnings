@@ -124,7 +124,6 @@ int main()
     Material cubeMaterial{{0.3f, 0.7f, 0.3f}, {0.7f, 0.3f, 0.1f}, {0.2f, 0.1f, 0.1f}},
         scaledCubeMaterial{{1, 1, 0}, {}, {}};
 
-
     opaqueRenderables.emplace_back(
         Model{std::filesystem::current_path().parent_path() / "Images" / "backpack" / "backpack.obj"},
         RenderData{
@@ -137,7 +136,7 @@ int main()
 
     opaqueRenderables.emplace_back(
         Examples::Cube{"C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/container2.png",
-                      "C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/container2_specular.png"},
+                       "C:/Users/oliver.rosten/source/repos/HelloTriangle/Images/container2_specular.png"},
         RenderData{
             {"../Shaders/cube.vs", "../Shaders/uber_phong.fs"},
             texturedCubeModel,

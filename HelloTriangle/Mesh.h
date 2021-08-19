@@ -21,7 +21,7 @@ namespace Graphics
 
     struct Texture
     {
-        unsigned int id;
+        unsigned int id{};
         std::string type;
         std::filesystem::path file;
     };
@@ -31,7 +31,11 @@ namespace Graphics
     public:
         // mesh data
         Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
-        void Draw(Graphics::ShaderProgram& shader) const;
+        void Draw(Graphics::ShaderProgram& shader);
+
+        Mesh(Mesh&&) noexcept = default;
+
+        Mesh& operator=(Mesh&&) noexcept = default;
     private:
 
         std::vector<Vertex>       m_Vertices;
@@ -41,8 +45,6 @@ namespace Graphics
         VAOBinder m_VAO;
         VBOBinder m_VBO;
         EBOBinder m_EBO;
-
-        //unsigned int m_VAO, m_VBO, m_EBO;
 
         void setupMesh();
     };

@@ -34,11 +34,11 @@ namespace Graphics
     public:
         ShaderCompiler(GLuint shaderType, std::string_view shaderSource, std::string_view shaderName);
 
-        ShaderCompiler(ShaderCompiler&& other)
+        ShaderCompiler(ShaderCompiler&& other) noexcept
             : m_Shader{std::exchange(other.m_Shader, 0)}
         {}
 
-        ShaderCompiler& operator=(ShaderCompiler&& other)
+        ShaderCompiler& operator=(ShaderCompiler&& other) noexcept
         {
             m_Shader = std::exchange(other.m_Shader, 0);
         }
@@ -51,7 +51,7 @@ namespace Graphics
 
         ~ShaderCompiler()
         {
-            glDeleteShader(m_Shader);
+            if(m_Shader) glDeleteShader(m_Shader);
         }
     };
 

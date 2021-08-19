@@ -16,7 +16,12 @@ namespace Graphics
         {
             loadModel(path.string());
         }
-        void Draw(ShaderProgram& shader) const;
+
+        Model(Model&&) noexcept = default;
+
+        Model& operator=(Model&&) noexcept = default;
+
+        void Draw(ShaderProgram& shader);
     private:
         // model data
         std::vector<Mesh> m_Meshes;

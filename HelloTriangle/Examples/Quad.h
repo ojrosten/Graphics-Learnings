@@ -20,10 +20,10 @@ namespace Graphics::Examples
         Quad(const std::filesystem::path& texPath, const std::filesystem::path& specMapPath = "");
 
         Quad(const Quad&) = delete;
-        Quad(Quad&&) = default;
+        Quad(Quad&&) noexcept = default;
 
         Quad& operator=(const Quad&) = delete;
-        Quad& operator=(Quad&&) = default;
+        Quad& operator=(Quad&&) noexcept = default;
 
         void Draw(Graphics::ShaderProgram&);
     private:

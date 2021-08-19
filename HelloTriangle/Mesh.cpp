@@ -10,12 +10,13 @@ namespace Graphics
         setupMesh();
     }
 
-    void Mesh::Draw(Graphics::ShaderProgram& shader) const
+    void Mesh::Draw(Graphics::ShaderProgram& shader)
     {
-        unsigned int diffuseNr = 1;
-        unsigned int specularNr = 1;
-        unsigned int normalNr{ 1 }, heightNr{ 1 };
+        m_VBO.bind();
+        m_VAO.bind();
+        m_EBO.bind();
 
+        unsigned int diffuseNr{1}, specularNr{1}, normalNr{1}, heightNr{1};
         for (unsigned int i = 0; i < m_Textures.size(); i++)
         {
             glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
@@ -43,15 +44,8 @@ namespace Graphics
             shader.setFloat(std::string{/*"material."*/}.append(name).append(number), static_cast<float>(i));
             glBindTexture(GL_TEXTURE_2D, m_Textures[i].id);
         }
-        glActiveTexture(GL_TEXTURE0);
 
-        // draw mesh
-        glBindVertexArray(m_VAO.get());
-//        glBindVertexArray(m_VAO);
         glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_Indices.size()), GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
-
-        glActiveTexture(GL_TEXTURE0);
     }
 
     void Mesh::setupMesh()
@@ -59,17 +53,9 @@ namespace Graphics
         if (m_Vertices.empty()) throw std::runtime_error{"Empty vertices"};
         if (m_Indices.empty()) throw std::runtime_error{ "Empty indices" };
 
-        /*glGenVertexArrays(1, &m_VAO);
-        glGenBuffers(1, &m_VBO);
-        glGenBuffers(1, &m_EBO);
-        glBindVertexArray(m_VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);*/
-
         glBufferData(GL_ARRAY_BUFFER, m_Vertices.size() * sizeof(Vertex), &m_Vertices[0], GL_STATIC_DRAW);
 
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(unsigned int),
-            &m_Indices[0], GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(unsigned int), &m_Indices[0], GL_STATIC_DRAW);
 
         // vertex positions
         glEnableVertexAttribArray(0);
@@ -86,7 +72,5 @@ namespace Graphics
         // vertex bitangent
         glEnableVertexAttribArray(4);
         glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
-
-        glBindVertexArray(0);
     }
 }
